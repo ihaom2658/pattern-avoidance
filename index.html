@@ -7,20 +7,34 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4133279395991822" crossorigin="anonymous"></script>
     <style>
         :root { --bg: #0c0c0c; --point: #f1c40f; --danger: #e74c3c; --text: #ffffff; --card: #1a1a1a; }
-        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Pretendard', sans-serif; overflow: hidden; display: flex; flex-direction: column; align-items: center; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Pretendard', sans-serif; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; }
+        
+        /* 상단 바 복구 */
         header { width: 100%; height: 65px; background: #000; border-bottom: 1px solid #333; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; box-sizing: border-box; position: sticky; top: 0; z-index: 1000; }
         .btn-hub { padding: 10px 20px; background: transparent; color: var(--point); text-decoration: none; font-weight: bold; border: 2px solid var(--point); border-radius: 5px; transition: 0.3s; font-size: 14px; }
         .btn-hub:hover { background: var(--point); color: #000; }
-        #game-container { position: relative; width: 100%; min-height: 600px; display: flex; justify-content: center; align-items: center; flex-direction: column; margin-top: 20px; }
-        canvas { background: #000; border: 4px solid #fff; display: none; }
+
+        #game-container { position: relative; width: 100%; min-height: 650px; display: flex; justify-content: center; align-items: center; flex-direction: column; margin-top: 20px; }
+        canvas { background: #000; border: 4px solid #fff; display: none; box-shadow: 0 0 25px rgba(255, 255, 255, 0.1); }
+
         .overlay { text-align: center; background: var(--card); padding: 40px; border-radius: 20px; border: 1px solid #333; min-width: 350px; }
+        #start-screen, #result-screen { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        
+        .difficulty-container { display: flex; gap: 15px; width: 100%; margin-top: 10px; }
         .btn-diff { padding: 12px 30px; font-size: 18px; border: none; cursor: pointer; font-weight: bold; border-radius: 8px; transition: 0.2s; flex: 1; }
         .btn-easy { background: #2ecc71; color: #000; }
         .btn-hard { background: var(--danger); color: #fff; }
+        
+        input { padding: 15px; font-size: 18px; border-radius: 8px; border: 1px solid #444; background: #000; color: #fff; width: 250px; text-align: center; margin-bottom: 10px; }
         .btn-main { padding: 15px 60px; font-size: 20px; background: var(--point); border: none; cursor: pointer; font-weight: bold; border-radius: 8px; transition: 0.2s; color: #000; }
+
         #status-ui { width: 400px; display: none; justify-content: space-between; font-size: 16px; font-weight: bold; margin-bottom: 10px; position: relative; }
-        #level-up-msg { position: absolute; right: -120px; color: var(--point); font-style: italic; animation: blink 0.5s infinite; display: none; }
+        #level-up-msg { position: absolute; right: -130px; color: var(--point); animation: blink 0.5s infinite; display: none; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
+
+        /* SEO 복구 */
+        #seo-content { width: 90%; max-width: 900px; padding: 60px 0; color: #777; line-height: 1.9; }
+        .seo-box { background: #111; padding: 25px; border-radius: 10px; border-left: 4px solid var(--point); margin-bottom: 20px; }
         #version-tag { position: fixed; bottom: 10px; right: 10px; font-size: 12px; color: #333; }
     </style>
 </head>
@@ -34,19 +48,22 @@
     <div id="game-container">
         <div id="start-screen" class="overlay">
             <h1 style="font-size: 2.2rem; margin: 0;">난이도 선택</h1>
-            <p style="color: #aaa;">플레이어 속도 2.0 | 듀얼 패턴 시스템 적용</p>
-            <div style="display:flex; gap:15px; width:100%; margin-top: 20px;">
+            <p style="color: #aaa;">플레이어 속도 2.0 | ESC 즉시 종료 지원</p>
+            <div class="difficulty-container">
                 <button class="btn-diff btn-easy" onclick="startGame('EASY')">EASY<br><span style="font-size:11px;">HP 15</span></button>
                 <button class="btn-diff btn-hard" onclick="startGame('HARD')">HARD<br><span style="font-size:11px;">HP 3 (HELL)</span></button>
             </div>
+            <p style="font-size: 14px; color: #555; margin-top: 15px;">조작: WASD | 중단: ESC</p>
         </div>
 
         <div id="result-screen" class="overlay" style="display:none;">
             <h2 style="color: var(--danger); margin: 0;">GAME OVER</h2>
             <h1 id="result-time" style="font-size: 3.5rem; color: var(--point); margin: 10px 0;">0.0s</h1>
-            <input type="text" id="username" placeholder="이름 (미입력 시 익명)" maxlength="10">
-            <br><br>
-            <button class="btn-main" id="save-btn" onclick="saveRecord()">기록 저장</button>
+            <div id="save-form">
+                <input type="text" id="username" placeholder="이름 (미입력 시 익명)" maxlength="10">
+                <br>
+                <button class="btn-main" id="save-btn" onclick="saveRecord()">기록 저장</button>
+            </div>
             <button class="btn-main" onclick="location.reload()" style="display:none; background: #333; color: #fff; margin-top: 10px;" id="retry-btn">다시 시도</button>
         </div>
 
@@ -59,7 +76,18 @@
         <canvas id="gameCanvas" width="400" height="400"></canvas>
     </div>
 
-    <div id="version-tag">v1.1.11</div>
+    <section id="seo-content">
+        <div class="seo-box">
+            <h3>패턴 피하기(Pattern Avoidance) v1.1.12 가이드</h3>
+            <p>본 게임은 게이머의 미세 무빙과 시각적 예측 능력을 극대화하기 위해 설계된 언더테일 스타일의 탄막 피하기 훈련 도구입니다. 2.0의 낮은 이동 속도는 플레이어에게 정확한 타이밍과 경로 선택을 강요하며, 이는 실제 게임 상황에서의 생존율 향상으로 이어집니다.</p>
+        </div>
+        <div class="seo-box">
+            <h3>동적 난이도 및 듀얼 패턴 시스템</h3>
+            <p>20초, 40초, 60초 구간마다 패턴의 밀도가 높아지며 신규 패턴(X자 레이저, 방사탄)이 추가됩니다. 레이저 타이머와 탄환 타이머가 독립적으로 작동하여 쉴 틈 없는 공격이 쏟아집니다. 30초와 60초 생존 시 난이도가 격상되며 우측 상단에 알림이 표시됩니다.</p>
+        </div>
+    </section>
+
+    <div id="version-tag">v1.1.12</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -78,9 +106,11 @@
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        let gameState = 'WAIT', diffMode = 'EASY', level = 1;
+        
+        let gameState = 'WAIT', diffMode = 'EASY', animationId = null;
         let player = { x: 200, y: 200, r: 6, hp: 15, speed: 2.0 };
         let objects = [], keys = {}, startTime = 0, survivedTime = "0.0";
+        let spawnTimers = [];
 
         window.addEventListener('keydown', (e) => { 
             keys[e.code] = true; 
@@ -102,52 +132,46 @@
         function startReady() {
             gameState = 'READY';
             let count = 3;
-            let timer = setInterval(() => {
-                if(gameState === 'END') { clearInterval(timer); return; }
+            let readyInt = setInterval(() => {
+                if(gameState === 'END') { clearInterval(readyInt); return; }
                 draw();
                 ctx.fillStyle = "#f1c40f"; ctx.font = "bold 50px Pretendard"; ctx.textAlign = "center";
                 ctx.fillText(count > 0 ? count : "GO!", 200, 220);
                 if(count < 0) { 
-                    clearInterval(timer); gameState = 'PLAY'; startTime = Date.now(); 
-                    spawnLaserLoop(); spawnHomingLoop(); gameLoop(); 
+                    clearInterval(readyInt); 
+                    if(gameState !== 'END') {
+                        gameState = 'PLAY'; startTime = Date.now(); 
+                        spawnLaserLoop(); spawnHomingLoop(); gameLoop(); 
+                    }
                 }
                 count--;
             }, 800);
         }
 
-        // 레이저 계열 생성 (독립 타이머)
         function spawnLaserLoop() {
             if(gameState !== 'PLAY') return;
             const t = parseFloat(survivedTime);
-            
             const rand = Math.random();
-            if(t > 40 && rand < 0.3) spawnX(); // 40초 이후 X자 레이저
-            else if(t > 20 && rand < 0.5) spawnCross(); // 20초 이후 십자 레이저
-            else spawnLaser(); // 일반 레이저
-
+            if(t > 40 && rand < 0.3) { spawnX(); }
+            else if(t > 20 && rand < 0.5) { spawnCross(); }
+            else { spawnLaser(); }
             let base = (diffMode === 'EASY') ? 800 : 500;
-            let interval = Math.max(150, base - (t * 12));
-            setTimeout(spawnLaserLoop, interval);
+            let itv = Math.max(150, base - (t * 12));
+            spawnTimers.push(setTimeout(spawnLaserLoop, itv));
         }
 
-        // 추적/방사 계열 생성 (독립 타이머)
         function spawnHomingLoop() {
             if(gameState !== 'PLAY') return;
             const t = parseFloat(survivedTime);
-            
-            if(t > 45 && Math.random() < 0.4) spawnRadial(); // 45초 이후 방사탄
-            else spawnHoming(); // 추적 탄환
-
+            if(t > 45 && Math.random() < 0.4) { spawnRadial(); }
+            else { spawnHoming(); }
             let base = (diffMode === 'EASY') ? 1200 : 700;
-            let interval = Math.max(300, base - (t * 15));
-            setTimeout(spawnHomingLoop, interval);
+            let itv = Math.max(300, base - (t * 15));
+            spawnTimers.push(setTimeout(spawnHomingLoop, itv));
         }
 
-        function spawnLaser() {
-            const sub = Math.random() > 0.5 ? 'H' : 'V';
-            objects.push({ type: 'LASER', sub: sub, pos: Math.random()*380+10, stage: 'WARN', timer: Date.now() });
-        }
-        function spawnCross() {
+        function spawnLaser() { objects.push({ type: 'LASER', sub: Math.random()>0.5?'H':'V', pos: Math.random()*380+10, stage: 'WARN', timer: Date.now() }); }
+        function spawnCross() { 
             objects.push({ type: 'LASER', sub: 'H', pos: player.y, stage: 'WARN', timer: Date.now(), thick: 25 });
             objects.push({ type: 'LASER', sub: 'V', pos: player.x, stage: 'WARN', timer: Date.now(), thick: 25 });
         }
@@ -155,12 +179,8 @@
             objects.push({ type: 'LASER', sub: 'X1', stage: 'WARN', timer: Date.now() });
             objects.push({ type: 'LASER', sub: 'X2', stage: 'WARN', timer: Date.now() });
         }
-        function spawnHoming() {
-            objects.push({ type: 'HOMING', x: Math.random()*400, y: Math.random()*400, stage: 'WARN', timer: Date.now() });
-        }
-        function spawnRadial() {
-            objects.push({ type: 'RADIAL', x: 200, y: 200, stage: 'FIRE', timer: Date.now(), count: 8 });
-        }
+        function spawnHoming() { objects.push({ type: 'HOMING', x: Math.random()*400, y: Math.random()*400, stage: 'WARN', timer: Date.now() }); }
+        function spawnRadial() { objects.push({ type: 'RADIAL', x: 200, y: 200, stage: 'FIRE', timer: Date.now() }); }
 
         function update() {
             if(gameState !== 'PLAY') return;
@@ -169,13 +189,12 @@
             if(keys['KeyA'] && player.x > player.r) player.x -= player.speed;
             if(keys['KeyD'] && player.x < 400 - player.r) player.x += player.speed;
 
-            let prevTime = parseFloat(survivedTime);
+            let prev = parseFloat(survivedTime);
             survivedTime = ((Date.now() - startTime) / 1000).toFixed(1);
             document.getElementById('ui-timer').innerText = survivedTime + 's';
             
-            // 레벨업 체크
-            let curTime = parseFloat(survivedTime);
-            if((prevTime < 30 && curTime >= 30) || (prevTime < 60 && curTime >= 60)) {
+            let cur = parseFloat(survivedTime);
+            if((prev < 30 && cur >= 30) || (prev < 60 && cur >= 60)) {
                 document.getElementById('level-up-msg').style.display = 'block';
                 setTimeout(() => document.getElementById('level-up-msg').style.display = 'none', 3000);
             }
@@ -183,17 +202,18 @@
             const now = Date.now();
             for(let i = objects.length - 1; i >= 0; i--) {
                 let o = objects[i];
-                const warnDuration = (diffMode === 'EASY') ? 700 : 500;
-
-                if(o.stage === 'WARN' && now - o.timer > warnDuration) {
+                const warnDur = (diffMode === 'EASY') ? 700 : 500;
+                if(o.stage === 'WARN' && now - o.timer > warnDur) {
                     o.stage = 'FIRE'; o.timer = now;
                     if(o.type === 'HOMING') {
                         const ang = Math.atan2(player.y - o.y, player.x - o.x);
                         o.vx = Math.cos(ang) * 5; o.vy = Math.sin(ang) * 5;
                     }
-                    if(o.type === 'RADIAL') { o.bullets = []; for(let j=0; j<8; j++){ 
-                        let a = (Math.PI*2/8)*j; o.bullets.push({x:o.x, y:o.y, vx:Math.cos(a)*3, vy:Math.sin(a)*3});
-                    }}
+                    if(o.type === 'RADIAL') { 
+                        o.bullets = []; for(let j=0; j<8; j++){ 
+                            let a = (Math.PI*2/8)*j; o.bullets.push({x:o.x, y:o.y, vx:Math.cos(a)*3, vy:Math.sin(a)*3});
+                        }
+                    }
                 } else if(o.stage === 'FIRE') {
                     let hit = false;
                     if(o.type === 'LASER') {
@@ -223,7 +243,6 @@
             ctx.fillStyle = "#000"; ctx.fillRect(0,0,400,400);
             ctx.beginPath(); ctx.arc(player.x, player.y, player.r, 0, Math.PI*2);
             ctx.fillStyle = "#e74c3c"; ctx.fill(); ctx.closePath();
-
             objects.forEach(o => {
                 ctx.beginPath();
                 if(o.type === 'LASER') {
@@ -236,17 +255,23 @@
                     ctx.stroke();
                 } else if(o.type === 'HOMING') {
                     if(o.stage === 'WARN') { ctx.fillStyle = "rgba(231,76,60,0.3)"; ctx.arc(o.x,o.y,4,0,Math.PI*2); ctx.fill(); }
-                    else { ctx.fillStyle = var(--point); ctx.arc(o.x,o.y,6,0,Math.PI*2); ctx.fill(); }
+                    else { ctx.fillStyle = "#f1c40f"; ctx.arc(o.x,o.y,6,0,Math.PI*2); ctx.fill(); }
                 } else if(o.type === 'RADIAL' && o.bullets) {
                     ctx.fillStyle = "#3498db"; o.bullets.forEach(b => { ctx.beginPath(); ctx.arc(b.x,b.y,4,0,Math.PI*2); ctx.fill(); });
                 }
             });
         }
 
-        function gameLoop() { if(gameState === 'PLAY') { update(); draw(); requestAnimationFrame(gameLoop); } }
+        function gameLoop() { 
+            if(gameState === 'PLAY') { update(); draw(); animationId = requestAnimationFrame(gameLoop); } 
+        }
 
         function endGame() {
-            gameState = 'END'; canvas.style.display = 'none';
+            if(gameState === 'END') return;
+            gameState = 'END';
+            cancelAnimationFrame(animationId);
+            spawnTimers.forEach(clearTimeout);
+            canvas.style.display = 'none';
             document.getElementById('status-ui').style.display = 'none';
             document.getElementById('result-screen').style.display = 'flex';
             document.getElementById('result-time').innerText = survivedTime + 's';
@@ -257,7 +282,7 @@
             const btn = document.getElementById('save-btn'); btn.disabled = true;
             try {
                 await addDoc(collection(db, "avoidance_rankings"), { name, score: parseFloat(survivedTime), difficulty: diffMode, createdAt: serverTimestamp() });
-                document.getElementById('save-btn').innerText = "저장 완료!";
+                document.getElementById('save-form').innerHTML = "<b>기록 등록 완료!</b>";
                 document.getElementById('retry-btn').style.display = 'block';
             } catch (e) { alert("저장 실패"); btn.disabled = false; }
         }
