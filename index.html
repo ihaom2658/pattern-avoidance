@@ -3,90 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>패턴 피하기 (Avoidance) - 반사신경 훈련</title>
+    <title>Pattern Avoidance - 정교한 컨트롤 훈련</title>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4133279395991822" crossorigin="anonymous"></script>
     <style>
-        :root {
-            --bg-color: #0c0c0c;
-            --point-color: #f1c40f;
-            --text-color: #ffffff;
-        }
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Pretendard', -apple-system, sans-serif;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        canvas {
-            display: block;
-            background: #1a1a1a;
-            border: 2px solid var(--point-color);
-            cursor: none;
-        }
-        #ui-layer {
-            position: absolute;
-            top: 20px;
-            text-align: center;
-            pointer-events: none;
-        }
-        .btn-hub {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            padding: 10px 20px;
-            background: var(--point-color);
-            color: #000;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 5px;
-        }
-        /* 버전 표시 */
-        #version-tag {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            font-size: 12px;
-            color: #555;
-        }
-        /* SEO 섹션 (화면 하단 배치) */
-        #seo-content {
-            margin-top: 50px;
-            padding: 20px;
-            max-width: 800px;
-            line-height: 1.6;
-            color: #888;
-            font-size: 14px;
-        }
+        :root { --bg: #0c0c0c; --point: #f1c40f; --danger: #e74c3c; --text: #ffffff; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Pretendard', sans-serif; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; }
+        
+        /* Game Hub 스타일 상단 버튼 */
+        .btn-hub { position: fixed; top: 20px; left: 20px; padding: 10px 20px; background: var(--point); color: #000; text-decoration: none; font-weight: bold; border-radius: 5px; z-index: 100; transition: 0.3s; }
+        .btn-hub:hover { background: #d4ac0d; }
+
+        #game-container { position: relative; width: 100%; height: 80vh; display: flex; justify-content: center; align-items: center; }
+        canvas { background: #000; border: 4px solid var(--text); display: none; }
+
+        /* UI 레이어 */
+        .overlay { position: absolute; text-align: center; width: 100%; }
+        #start-screen, #result-screen { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        input { padding: 12px; font-size: 18px; border-radius: 5px; border: none; width: 250px; text-align: center; }
+        button { padding: 12px 40px; font-size: 20px; background: var(--point); border: none; cursor: pointer; font-weight: bold; border-radius: 5px; }
+        button:hover { opacity: 0.9; }
+
+        #status-ui { position: absolute; bottom: -50px; width: 400px; display: none; justify-content: space-between; font-size: 20px; font-weight: bold; }
+        .hp-bar { color: var(--danger); }
+
+        /* SEO 컨텐츠 영역 */
+        #seo-content { width: 90%; max-width: 800px; padding: 50px 0; color: #888; line-height: 1.8; text-align: justify; border-top: 1px solid #333; margin-top: 100px; }
+        #version-tag { position: fixed; bottom: 10px; right: 10px; font-size: 12px; color: #444; }
     </style>
 </head>
 <body>
 
-    <div id="ui-layer">
-        <h1 style="color: var(--point-color);">Avoidance</h1>
-        <p>생존 시간: <span id="timer">0.00</span>s</p>
+    <a href="https://game-hub-steel-eight.vercel.app/" class="btn-hub">← GAME HUB 돌아가기</a>
+
+    <div id="game-container">
+        <div id="start-screen" class="overlay">
+            <h1 style="font-size: 3rem; color: var(--point);">PATTERN AVOIDANCE</h1>
+            <input type="text" id="username" placeholder="이름을 입력하세요" maxlength="10">
+            <button onclick="checkStart()">GAME START</button>
+            <p style="color: #666;">[W,A,S,D] 이동 | [ESC] 중단 및 기록</p>
+        </div>
+
+        <div id="result-screen" class="overlay" style="display:none;">
+            <h2 id="result-msg" style="font-size: 2.5rem; color: var(--danger);">GAME OVER</h2>
+            <p id="result-time" style="font-size: 1.5rem;">0.0s 생존</p>
+            <button onclick="location.reload()">다시 시작</button>
+        </div>
+
+        <canvas id="gameCanvas" width="400" height="400"></canvas>
+        <div id="status-ui">
+            <div id="ui-name">PLAYER</div>
+            <div class="hp-bar">HP: <span id="hp-val">5</span></div>
+            <div id="ui-timer">0.0s</div>
+        </div>
     </div>
 
-    <canvas id="gameCanvas"></canvas>
-
-    <a href="https://game-hub-steel-eight.vercel.app/" class="btn-hub">메인 허브로 돌아가기</a>
-
     <section id="seo-content">
-        <h2>패턴 피하기: 당신의 인지 능력과 반사신경을 테스트하세요</h2>
-        <p>본 게임은 사용자의 시각적 인지 능력과 손과 눈의 협응력을 극대화하기 위해 설계되었습니다. 
-           다양한 각도에서 날아오는 장애물 패턴을 분석하고 짧은 순간의 판단으로 생존을 이어가야 합니다. 
-           훈련 효과로는 집중력 향상, 동적 시력 강화, 스트레스 상황에서의 평정심 유지 등이 있습니다...</p>
-        </section>
+        <h3>패턴 피하기(Avoidance) 훈련의 기술적 목적과 효과</h3>
+        <p>본 게임은 게이머의 미세 컨트롤 능력과 동적 시력을 극대화하기 위해 설계된 언더테일 스타일의 탄막 피하기 시뮬레이션입니다. 좁은 공간 내에서 붉은 색 플레이어 개체를 조작하며, 불규칙하게 발생하는 가로 및 세로 레이저 패턴을 회피해야 합니다. 이는 FPS 게임에서의 무빙 실력 향상과 더불어 탄막 슈팅 게임에서 요구되는 정교한 충돌 판정 인지 능력을 길러줍니다.</p>
+        <p>무작위로 생성되는 예고선 패턴은 뇌의 시각적 예측 속도를 빠르게 하며, 0.1초 단위로 기록되는 생존 시간 시스템은 사용자의 도전 욕구를 자극합니다. 특히 레이저 패턴은 속도와 간격이 고도화되어 있어 고도의 집중력이 필요합니다. 지속적인 훈련을 통해 압박 상황에서도 평정심을 유지하며 최적의 경로를 찾는 문제 해결 능력을 향상시킬 수 있습니다. 추후 업데이트될 랭킹 시스템을 통해 전 세계 사용자들과 실력을 겨루어 보십시오...</p>
+    </section>
 
-    <div id="version-tag">v1.1.3</div>
+    <div id="version-tag">v1.1.6</div>
 
     <script type="module">
+        // Firebase 설정 (가이드 준수)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCWvmTD7ZqrM8QS2jAtIoxyYw9zDghyyZo",
@@ -96,12 +78,162 @@
             messagingSenderId: "275700573811",
             appId: "1:275700573811:web:bb1290a5e5ec97a73cac06"
         };
-
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const colRef = collection(db, "avoidance_rankings"); // 독립된 랭킹 컬렉션
 
-        // TODO: 게임 루프 및 장애물 패턴 로직 구현 예정
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let gameState = 'WAIT'; // WAIT, READY, PLAY, END
+        let player = { x: 200, y: 200, r: 8, hp: 5, speed: 4 };
+        let lasers = [];
+        let startTime = 0;
+        let survivedTime = 0;
+        let keys = {};
+        let userName = "";
+
+        // 이벤트 리스너
+        window.addEventListener('keydown', (e) => { 
+            keys[e.code] = true; 
+            if(e.code === 'Escape') endGame(); 
+        });
+        window.addEventListener('keyup', (e) => { keys[e.code] = false; });
+
+        window.checkStart = function() {
+            userName = document.getElementById('username').value.trim() || "비명외계인";
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('status-ui').style.display = 'flex';
+            document.getElementById('ui-name').innerText = userName;
+            canvas.style.display = 'block';
+            startReady();
+        }
+
+        function startReady() {
+            gameState = 'READY';
+            let count = 3;
+            let timer = setInterval(() => {
+                draw(); // 배경 유지
+                ctx.fillStyle = "#f1c40f";
+                ctx.font = "bold 40px Pretendard";
+                ctx.textAlign = "center";
+                ctx.fillText(count > 0 ? count : "START!", 200, 200);
+                
+                if (gameState === 'END') clearInterval(timer); // Ready 중 ESC 대응
+                
+                if(count < 0) {
+                    clearInterval(timer);
+                    if(gameState !== 'END') {
+                        gameState = 'PLAY';
+                        startTime = Date.now();
+                        spawnLaser();
+                        gameLoop();
+                    }
+                }
+                count--;
+            }, 800);
+        }
+
+        function spawnLaser() {
+            if(gameState !== 'PLAY') return;
+            const type = Math.random() > 0.5 ? 'H' : 'V'; // 가로 또는 세로
+            const pos = Math.random() * 380 + 10;
+            const laser = {
+                type: type,
+                pos: pos,
+                stage: 'WARN', // WARN -> FIRE
+                timer: Date.now()
+            };
+            lasers.push(laser);
+            setTimeout(spawnLaser, 700); // 0.7초마다 새로운 패턴 생성
+        }
+
+        function update() {
+            if(gameState !== 'PLAY') return;
+
+            // 이동 로직
+            if(keys['KeyW'] && player.y > player.r) player.y -= player.speed;
+            if(keys['KeyS'] && player.y < canvas.height - player.r) player.y += player.speed;
+            if(keys['KeyA'] && player.x > player.r) player.x -= player.speed;
+            if(keys['KeyD'] && player.x < canvas.width - player.r) player.x += player.speed;
+
+            survivedTime = ((Date.now() - startTime) / 1000).toFixed(1);
+            document.getElementById('ui-timer').innerText = survivedTime + 's';
+
+            // 레이저 업데이트 및 충돌 검사
+            const now = Date.now();
+            lasers.forEach((l, index) => {
+                if(l.stage === 'WARN' && now - l.timer > 800) {
+                    l.stage = 'FIRE';
+                    l.timer = now;
+                } else if(l.stage === 'FIRE') {
+                    // 충돌 판정
+                    let hit = false;
+                    if(l.type === 'H' && Math.abs(player.y - l.pos) < player.r + 10) hit = true;
+                    if(l.type === 'V' && Math.abs(player.x - l.pos) < player.r + 10) hit = true;
+                    
+                    if(hit) {
+                        player.hp -= 1;
+                        document.getElementById('hp-val').innerText = player.hp;
+                        lasers.splice(index, 1); // 맞으면 레이저 제거
+                        if(player.hp <= 0) endGame();
+                    }
+
+                    if(now - l.timer > 300) lasers.splice(index, 1); // 발사 후 제거
+                }
+            });
+        }
+
+        function draw() {
+            ctx.fillStyle = "#000";
+            ctx.fillRect(0,0,400,400);
+
+            // 플레이어 (붉은 원)
+            ctx.beginPath();
+            ctx.arc(player.x, player.y, player.r, 0, Math.PI*2);
+            ctx.fillStyle = "#e74c3c";
+            ctx.fill();
+            ctx.closePath();
+
+            // 레이저
+            lasers.forEach(l => {
+                if(l.stage === 'WARN') {
+                    ctx.strokeStyle = "rgba(241, 196, 15, 0.4)";
+                    ctx.lineWidth = 2;
+                } else {
+                    ctx.strokeStyle = "#ffffff";
+                    ctx.lineWidth = 20;
+                }
+                ctx.beginPath();
+                if(l.type === 'H') { ctx.moveTo(0, l.pos); ctx.lineTo(400, l.pos); }
+                else { ctx.moveTo(l.pos, 0); ctx.lineTo(l.pos, 400); }
+                ctx.stroke();
+            });
+        }
+
+        function gameLoop() {
+            if(gameState !== 'PLAY') return;
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        async function endGame() {
+            if(gameState === 'END') return;
+            gameState = 'END';
+            canvas.style.display = 'none';
+            document.getElementById('status-ui').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'flex';
+            document.getElementById('result-time').innerText = survivedTime + 's 생존';
+
+            // Firebase 랭킹 저장
+            try {
+                await addDoc(collection(db, "avoidance_rankings"), {
+                    name: userName,
+                    score: parseFloat(survivedTime),
+                    timestamp: new Date()
+                });
+            } catch (e) { console.error("Error adding document: ", e); }
+        }
     </script>
 </body>
 </html>
