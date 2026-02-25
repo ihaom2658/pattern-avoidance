@@ -35,8 +35,6 @@
         .rank-table th { border-bottom: 2px solid #444; padding: 10px; color: var(--point); }
         .rank-table td { padding: 10px; border-bottom: 1px solid #222; text-align: center; }
 
-        #seo-content { width: 90%; max-width: 900px; padding: 60px 0; color: #777; line-height: 1.9; }
-        .seo-box { background: #111; padding: 25px; border-radius: 10px; border-left: 4px solid var(--point); margin-bottom: 25px; }
         #version-tag { position: fixed; bottom: 10px; right: 10px; font-size: 12px; color: #333; }
     </style>
 </head>
@@ -50,7 +48,7 @@
     <div id="game-container">
         <div id="start-screen" class="overlay">
             <h1 style="font-size: 2.2rem; margin: 0;">난이도 선택</h1>
-            <p style="color: #aaa;">레벨업 알림 수정 및 난이도 밸런싱 (BGM 제거)</p>
+            <p style="color: #aaa;">멈춤 현상(Variable Error) 수정 완료</p>
             <div class="difficulty-container">
                 <button class="btn-diff btn-easy" onclick="startGame('EASY')">EASY<br><span style="font-size:11px;">HP 15</span></button>
                 <button class="btn-diff btn-hard" onclick="startGame('HARD')">HARD<br><span style="font-size:11px;">HP 3 (HELL)</span></button>
@@ -86,15 +84,7 @@
         </div>
     </div>
 
-    <section id="seo-content">
-        <div class="seo-box">
-            <h3>패턴 피하기(Pattern Avoidance) v1.1.19 업데이트</h3>
-            <p>이번 업데이트에서는 플레이어들의 피드백을 반영하여 게임의 전반적인 난이도를 재조정했습니다. <b>이지 모드</b>의 경우 패턴 생성 간격을 완화하여 초보자들도 충분히 패턴을 익힐 수 있도록 했으며, <b>하드 모드</b>는 여전히 강력하지만 초반부의 급격한 난이도 상승을 억제했습니다.</p>
-            <p>또한, 30초와 60초 생존 시 나타나야 했던 'LEVEL UP!' 알림이 정상적으로 출력되도록 수정하여 생존에 따른 성취감을 더했습니다. 불안정했던 배경음악 기능을 제거하여 어떤 브라우저 환경에서도 끊김 없는 쾌적한 플레이를 보장합니다.</p>
-        </div>
-    </section>
-
-    <div id="version-tag">v1.1.19</div>
+    <div id="version-tag">v1.1.20</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -140,6 +130,7 @@
             player.hp = (mode === 'EASY') ? 15 : 3;
             player.x = 200; player.y = 200; player.invul = 0;
             objects = []; survivedTime = "0.0";
+            spawnTimers.forEach(clearTimeout); spawnTimers = [];
             document.getElementById('hp-val').innerText = player.hp;
             document.getElementById('ui-diff-label').innerText = 'MODE: ' + mode;
             document.getElementById('start-screen').style.display = 'none';
@@ -175,11 +166,8 @@
             if(t > 40 && Math.random() < 0.3) spawnX();
             else if(t > 20 && Math.random() < 0.5) spawnCross();
             else spawnLaser();
-            
-            // 난이도 하향 조정 (EASY 1000ms, HARD 600ms 시작)
             let base = (diffMode === 'EASY') ? 1000 : 600;
-            let interval = Math.max(180, base - (t * 10)); // 가속도 완화
-            spawnTimers.push(setTimeout(spawnLaserLoop, interval));
+            spawnTimers.push(setTimeout(spawnLaserLoop, Math.max(180, base - (t * 10))));
         }
 
         function spawnHomingLoop() {
@@ -187,11 +175,8 @@
             const t = parseFloat(survivedTime);
             if(t > 45 && Math.random() < 0.4) spawnRadial();
             else spawnHoming();
-            
-            // 추적 탄환 간격 조정 (EASY 1400ms, HARD 800ms 시작)
             let base = (diffMode === 'EASY') ? 1400 : 800;
-            let interval = Math.max(350, base - (t * 12));
-            spawnTimers.push(setTimeout(spawnHomingLoop, interval));
+            spawnTimers.push(setTimeout(spawnHomingLoop, Math.max(350, base - (t * 12))));
         }
 
         function spawnLaser() { objects.push({ type: 'LASER', sub: Math.random()>0.5?'H':'V', pos: Math.random()*380+10, stage: 'WARN', timer: Date.now() }); }
@@ -223,11 +208,11 @@
             let curTime = parseFloat(survivedTime);
             document.getElementById('ui-timer').innerText = survivedTime + 's';
             
-            // 레벨업 메시지 로직 수정 (30초, 60초 통과 시 3초간 표시)
+            // 멈춤 현상 원인이었던 'cur' 변수 참조 오류 수정
             if((prevTime < 30 && curTime >= 30) || (prevTime < 60 && curTime >= 60)) {
                 const msg = document.getElementById('level-up-msg');
                 msg.style.display = 'block';
-                setTimeout(() => { msg.style.display = 'none'; }, 3000);
+                setTimeout(() => { if(msg) msg.style.display = 'none'; }, 3000);
             }
 
             for(let i = objects.length - 1; i >= 0; i--) {
@@ -258,10 +243,12 @@
                         if(Math.hypot(player.x-o.x, player.y-o.y) < player.r + 5) hit = true;
                         if(o.x<0 || o.x>400 || o.y<0 || o.y>400) objects.splice(i, 1);
                     } else if(o.type === 'RADIAL') {
-                        o.bullets.forEach((b, bi) => {
-                            b.x += b.vx; b.y += b.vy;
-                            if(Math.hypot(player.x-b.x, player.y-b.y) < player.r + 4) { hit = true; o.bullets.splice(bi, 1); }
-                        });
+                        if(o.bullets) {
+                            o.bullets.forEach((b, bi) => {
+                                b.x += b.vx; b.y += b.vy;
+                                if(Math.hypot(player.x-b.x, player.y-b.y) < player.r + 4) { hit = true; o.bullets.splice(bi, 1); }
+                            });
+                        }
                         if(now - o.timer > 2000) objects.splice(i, 1);
                     }
                     if(hit && player.invul <= 0) { 
