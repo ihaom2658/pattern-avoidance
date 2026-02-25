@@ -32,7 +32,9 @@
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
 
         #seo-content { width: 90%; max-width: 900px; padding: 60px 0; color: #777; line-height: 1.9; }
-        .seo-box { background: #111; padding: 25px; border-radius: 10px; border-left: 4px solid var(--point); margin-bottom: 20px; }
+        .seo-box { background: #111; padding: 25px; border-radius: 10px; border-left: 4px solid var(--point); margin-bottom: 25px; }
+        .seo-box h3 { color: var(--point); margin-top: 0; }
+        .seo-box p { margin-bottom: 15px; }
         #version-tag { position: fixed; bottom: 10px; right: 10px; font-size: 12px; color: #333; }
     </style>
 </head>
@@ -46,7 +48,7 @@
     <div id="game-container">
         <div id="start-screen" class="overlay">
             <h1 style="font-size: 2.2rem; margin: 0;">난이도 선택</h1>
-            <p style="color: #aaa;">추적 궤도 라인 복구 | 속도 2.0</p>
+            <p style="color: #aaa;">BGM 추가 완료! 궤도 추적 및 속도 2.0</p>
             <div class="difficulty-container">
                 <button class="btn-diff btn-easy" onclick="startGame('EASY')">EASY<br><span style="font-size:11px;">HP 15</span></button>
                 <button class="btn-diff btn-hard" onclick="startGame('HARD')">HARD<br><span style="font-size:11px;">HP 3 (HELL)</span></button>
@@ -76,16 +78,22 @@
 
     <section id="seo-content">
         <div class="seo-box">
-            <h3>패턴 피하기(Pattern Avoidance) v1.1.13 가이드</h3>
-            <p>본 게임은 게이머의 미세 무빙과 시각적 예측 능력을 극대화하기 위해 설계된 언더테일 스타일의 탄막 피하기 훈련 도구입니다. 2.0의 낮은 이동 속도는 플레이어에게 정확한 타이밍과 경로 선택을 강요하며, 이는 실제 게임 상황에서의 생존율 향상으로 이어집니다.</p>
+            <h3>패턴 피하기(Pattern Avoidance) v1.1.14: 게임 마스터 가이드</h3>
+            <p>본 게임은 게이머의 미세 무빙 역량과 시각적 예측 지능을 극한까지 끌어올리기 위해 제작되었습니다. 특히 이번 버전에서 고정된 <b>2.0의 낮은 이동 속도</b>는 플레이어에게 빠른 반응보다는 '정확한 위치 선정'과 '패턴 읽기' 능력을 요구합니다. 무작위로 생성되는 탄막 사이에서 0.1mm의 오차도 허용하지 않는 정밀한 컨트롤을 연습해 보세요.</p>
+            <p>이지 모드에서는 15의 넉넉한 체력으로 패턴의 메커니즘을 학습할 수 있으며, 하드 모드는 단 3회의 피격만으로 게임이 종료되는 지옥 같은 난이도를 제공합니다. 고득점을 위해서는 화면 중앙을 고수하기보다 외곽과 중앙을 유연하게 오가는 전략이 필수적입니다.</p>
         </div>
         <div class="seo-box">
-            <h3>동적 난이도 및 듀얼 패턴 시스템</h3>
-            <p>20초, 40초, 60초 구간마다 패턴의 밀도가 높아지며 신규 패턴(X자 레이저, 방사탄)이 추가됩니다. 레이저 타이머와 탄환 타이머가 독립적으로 작동하여 쉴 틈 없는 공격이 쏟아집니다. 30초와 60초 생존 시 난이도가 격상되며 우측 상단에 알림이 표시됩니다.</p>
+            <h3>실시간 동적 난이도 및 듀얼 엔진 시스템</h3>
+            <p>게임은 내부적으로 <b>레이저 생성 엔진</b>과 <b>추적 탄환 엔진</b>이 독립적으로 구동됩니다. 20초가 경과하면 화면을 사분할하는 '십자 레이저'가 등장하며, 40초 이후에는 대각선 전체를 타격하는 'X자 레이저'가 추가되어 안전 구역이 급격히 줄어듭니다. 또한 45초부터는 특정 지점에서 8방향으로 퍼져나가는 방사형 탄환이 추가되어 쉴 틈 없는 회피를 강요합니다.</p>
+            <p>30초와 60초 생존 시에는 우측 상단에 'LEVEL UP!' 표시와 함께 모든 패턴의 생성 간격이 최대치로 가속화됩니다. 신나는 비트의 BGM과 함께 몰입감을 극대화하고, 전 세계 플레이어들과 실시간 랭킹 경쟁을 통해 당신의 피지컬을 증명하십시오.</p>
+        </div>
+        <div class="seo-box">
+            <h3>시스템 업데이트 및 버그 수정 내역</h3>
+            <p>v1.1.14 버전에서는 사용자 피드백을 반영하여 게임 중단(ESC) 시의 안정성을 강화하였습니다. 또한 추적 탄환 발사 전 플레이어를 실시간으로 조준하는 '궤도 점선'을 다시 활성화하여 전략적인 회피가 가능하도록 개선했습니다. 고품질의 8비트 사운드트랙은 플레이어의 집중력을 유지시켜주며, Firebase 연동을 통한 실시간 데이터 저장 시스템은 안정적인 기록 관리를 보장합니다.</p>
         </div>
     </section>
 
-    <div id="version-tag">v1.1.13</div>
+    <div id="version-tag">v1.1.14</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -105,6 +113,10 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         
+        // BGM 설정
+        const bgm = new Audio('https://orangefreesounds.com/wp-content/uploads/2014/10/8-bit-music-loop.mp3');
+        bgm.loop = true;
+
         let gameState = 'WAIT', diffMode = 'EASY', animationId = null;
         let player = { x: 200, y: 200, r: 6, hp: 15, speed: 2.0 };
         let objects = [], keys = {}, startTime = 0, survivedTime = "0.0";
@@ -124,6 +136,10 @@
             document.getElementById('start-screen').style.display = 'none';
             document.getElementById('status-ui').style.display = 'flex';
             canvas.style.display = 'block';
+            
+            // BGM 재생 (사용자 상호작용 후 재생 가능)
+            bgm.play().catch(e => console.log("BGM Play blocked"));
+            
             startReady();
         }
 
@@ -153,7 +169,6 @@
             if(t > 40 && rand < 0.3) spawnX();
             else if(t > 20 && rand < 0.5) spawnCross();
             else spawnLaser();
-            
             let base = (diffMode === 'EASY') ? 800 : 500;
             let itv = Math.max(150, base - (t * 12));
             spawnTimers.push(setTimeout(spawnLaserLoop, itv));
@@ -164,7 +179,6 @@
             const t = parseFloat(survivedTime);
             if(t > 45 && Math.random() < 0.4) spawnRadial();
             else spawnHoming();
-
             let base = (diffMode === 'EASY') ? 1200 : 700;
             let itv = Math.max(300, base - (t * 15));
             spawnTimers.push(setTimeout(spawnHomingLoop, itv));
@@ -255,7 +269,6 @@
                     ctx.stroke();
                 } else if(o.type === 'HOMING') {
                     if(o.stage === 'WARN') { 
-                        // 추적 궤도 라인 (다시 추가)
                         ctx.strokeStyle = "rgba(231,76,60,0.4)"; ctx.lineWidth = 1; ctx.setLineDash([2,4]);
                         ctx.moveTo(o.x, o.y); ctx.lineTo(player.x, player.y); ctx.stroke();
                         ctx.setLineDash([]);
@@ -276,6 +289,7 @@
         function endGame() {
             if(gameState === 'END') return;
             gameState = 'END';
+            bgm.pause(); bgm.currentTime = 0; // BGM 중지
             if(animationId) cancelAnimationFrame(animationId);
             spawnTimers.forEach(clearTimeout);
             canvas.style.display = 'none';
@@ -289,7 +303,7 @@
             const btn = document.getElementById('save-btn'); btn.disabled = true;
             try {
                 await addDoc(collection(db, "avoidance_rankings"), { name, score: parseFloat(survivedTime), difficulty: diffMode, createdAt: serverTimestamp() });
-                document.getElementById('save-form').innerHTML = "<b>기록 등록 완료!</b>";
+                document.getElementById('save-btn').innerText = "저장 완료!";
                 document.getElementById('retry-btn').style.display = 'block';
             } catch (e) { alert("저장 실패"); btn.disabled = false; }
         }
