@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pattern Avoidance - 모바일 지원</title>
+    <title>Pattern Avoidance - 극한의 패턴 피하기 게임</title>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4133279395991822" crossorigin="anonymous"></script>
     <style>
         :root { --bg: #0c0c0c; --point: #f1c40f; --danger: #e74c3c; --text: #ffffff; --card: #1a1a1a; }
@@ -15,30 +15,30 @@
         #game-container { position: relative; width: 100%; max-width: 400px; display: flex; justify-content: center; align-items: center; flex-direction: column; margin-top: 10px; }
         canvas { background: #000; border: 3px solid #fff; display: none; width: 100%; aspect-ratio: 1/1; box-shadow: 0 0 25px rgba(255, 255, 255, 0.1); touch-action: none; }
 
-        /* 가상 패드 스타일 */
+        /* 모바일 가상 패드 */
         #mobile-controls { display: none; position: fixed; bottom: 30px; left: 0; right: 0; height: 160px; pointer-events: none; z-index: 2000; }
         .d-pad { position: absolute; bottom: 0; left: 20px; display: grid; grid-template-columns: repeat(3, 55px); grid-template-rows: repeat(2, 55px); gap: 10px; pointer-events: auto; }
-        .ctrl-btn { width: 55px; height: 55px; background: rgba(255, 255, 255, 0.2); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff; user-select: none; -webkit-tap-highlight-color: transparent; }
-        .ctrl-btn:active { background: rgba(255, 255, 255, 0.5); }
+        .ctrl-btn { width: 55px; height: 55px; background: rgba(255, 255, 255, 0.2); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff; user-select: none; }
         .btn-up { grid-column: 2; }
         .btn-left { grid-column: 1; grid-row: 2; }
         .btn-down { grid-column: 2; grid-row: 2; }
         .btn-right { grid-column: 3; grid-row: 2; }
 
         .overlay { text-align: center; background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid #333; width: 90%; box-sizing: border-box; }
-        #start-screen, #result-screen { display: flex; flex-direction: column; align-items: center; gap: 15px; }
-        
-        .difficulty-container { display: flex; gap: 10px; width: 100%; }
         .btn-diff { padding: 15px 0; font-size: 18px; border: none; cursor: pointer; font-weight: bold; border-radius: 8px; flex: 1; }
         .btn-easy { background: #2ecc71; color: #000; }
         .btn-hard { background: var(--danger); color: #fff; }
-        
         .btn-main { padding: 15px 40px; font-size: 18px; background: var(--point); border: none; font-weight: bold; border-radius: 8px; color: #000; }
 
-        #status-ui { width: 95%; display: none; justify-content: space-between; font-size: 14px; font-weight: bold; margin-bottom: 8px; }
+        #status-ui { width: 95%; display: none; justify-content: space-between; font-size: 14px; font-weight: bold; margin-bottom: 8px; position: relative; }
         #level-up-msg { position: absolute; top: -30px; width: 100%; text-align: center; color: var(--point); animation: blink 0.5s infinite; display: none; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
 
+        /* SEO 콘텐츠 영역 */
+        #seo-section { width: 90%; max-width: 800px; margin-top: 40px; padding-bottom: 100px; color: #ccc; line-height: 1.8; }
+        .seo-content-box { background: #111; padding: 25px; border-radius: 12px; border-left: 4px solid var(--point); margin-bottom: 20px; }
+        .seo-content-box h2 { color: var(--point); font-size: 1.4rem; margin-top: 0; }
+        
         #ranking-board { width: 95%; background: var(--card); border-radius: 15px; margin-top: 20px; border: 1px solid #333; }
         .rank-table { width: 100%; border-collapse: collapse; font-size: 13px; }
         .rank-table th { border-bottom: 2px solid #444; padding: 10px; color: var(--point); }
@@ -62,7 +62,7 @@
     <div id="game-container">
         <div id="start-screen" class="overlay">
             <h1 style="font-size: 1.8rem; margin: 0;">난이도 선택</h1>
-            <div class="difficulty-container">
+            <div style="display:flex; gap:10px; width:100%;">
                 <button class="btn-diff btn-easy" onclick="startGame('EASY')">EASY</button>
                 <button class="btn-diff btn-hard" onclick="startGame('HARD')">HARD</button>
             </div>
@@ -96,6 +96,26 @@
         </div>
     </div>
 
+    <section id="seo-section">
+        <div class="seo-content-box">
+            <h2>패턴 피하기(Pattern Avoidance) 게임 소개</h2>
+            <p>패턴 피하기는 사용자의 순발력과 정밀한 컨트롤을 요구하는 웹 기반 아케이드 게임입니다. 단순한 조작법 속에 숨겨진 극한의 난이도는 플레이어들에게 끊임없는 도전 의식을 불러일으킵니다. 본 게임은 별도의 설치 없이 브라우저에서 즉시 실행 가능하며, PC와 모바일 환경 모두 최적화된 조작 시스템을 제공합니다.</p>
+        </div>
+
+        <div class="seo-content-box">
+            <h2>주요 게임 특징 및 난이도 안내</h2>
+            <p>플레이어는 <b>EASY</b>와 <b>HARD</b> 두 가지 모드 중 하나를 선택할 수 있습니다. <br>
+            - <b>EASY 모드:</b> 총 15의 체력(HP)이 주어지며, 초반 패턴의 생성 속도가 완만하여 초보자들이 게임의 메커니즘을 익히기에 적합합니다.<br>
+            - <b>HARD 모드:</b> 단 3의 체력만 주어지는 극한의 생존 모드입니다. 패턴 생성 주기가 매우 짧고 복합적인 공격이 초반부터 쏟아져 나오므로 숙련된 플레이어들에게 추천합니다.</p>
+            <p>30초와 60초 생존 시에는 'LEVEL UP!' 알림과 함께 패턴의 밀도가 더욱 높아지며, 실시간으로 변하는 공격 궤적을 읽어내는 것이 승리의 핵심입니다.</p>
+        </div>
+
+        <div class="seo-content-box">
+            <h2>기술적 사양 및 랭킹 시스템</h2>
+            <p>본 게임은 HTML5 Canvas API를 활용하여 제작되었으며, Firebase 실시간 데이터베이스를 통해 전 세계 플레이어들과 기록을 경쟁할 수 있는 랭킹 시스템을 탑재하고 있습니다. 모바일 사용자를 위한 반투명 가상 조이스틱은 화면 가림을 최소화하면서도 정밀한 회피 기동을 가능하게 합니다. 또한 부드러운 프레임 처리를 위해 requestAnimationFrame 로직을 적용하여 저사양 기기에서도 쾌적한 플레이를 보장합니다.</p>
+        </div>
+    </section>
+
     <div id="mobile-controls">
         <div class="d-pad">
             <div class="ctrl-btn btn-up" ontouchstart="handleTouch('KeyW', true)" ontouchend="handleTouch('KeyW', false)">↑</div>
@@ -105,7 +125,7 @@
         </div>
     </div>
 
-    <div id="version-tag">v1.1.22</div>
+    <div id="version-tag">v1.1.23</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -126,14 +146,11 @@
         const ctx = canvas.getContext('2d');
 
         let gameState = 'WAIT', diffMode = 'EASY', animationId = null;
-        let player = { x: 200, y: 200, r: 6, hp: 15, speed: 2.2, invul: 0 };
+        let player = { x: 200, y: 200, r: 6, hp: 15, speed: 2.3, invul: 0 };
         let objects = [], keys = {}, startTime = 0, survivedTime = "0.0";
         let spawnTimers = [], lastUpdate = 0;
 
-        // 터치 핸들러
-        window.handleTouch = function(code, isPressed) {
-            keys[code] = isPressed;
-        };
+        window.handleTouch = (code, isPressed) => { keys[code] = isPressed; };
 
         const q = query(collection(db, "avoidance_rankings"), orderBy("score", "desc"), limit(10));
         onSnapshot(q, (snapshot) => {
@@ -142,8 +159,8 @@
             let rank = 1;
             snapshot.forEach((doc) => {
                 const data = doc.data();
-                const score = parseFloat(data.score) || 0;
-                list.innerHTML += `<tr><td>${rank}위</td><td>${data.name||'익명'}</td><td style="color:var(--point)">${score.toFixed(1)}s</td><td>${data.difficulty||'EASY'}</td></tr>`;
+                const s = parseFloat(data.score) || 0;
+                list.innerHTML += `<tr><td>${rank}위</td><td>${data.name||'익명'}</td><td style="color:var(--point)">${s.toFixed(1)}s</td><td>${data.difficulty||'EASY'}</td></tr>`;
                 rank++;
             });
         });
@@ -151,7 +168,7 @@
         window.addEventListener('keydown', (e) => { keys[e.code] = true; if(e.code === 'Escape') endGame(); });
         window.addEventListener('keyup', (e) => { keys[e.code] = false; });
 
-        window.startGame = function(mode) {
+        window.startGame = (mode) => {
             diffMode = mode;
             player.hp = (mode === 'EASY') ? 15 : 3;
             player.x = 200; player.y = 200; objects = []; 
@@ -229,7 +246,7 @@
             if((prev < 30 && cur >= 30) || (prev < 60 && cur >= 60)) {
                 const msg = document.getElementById('level-up-msg');
                 msg.style.display = 'block';
-                setTimeout(() => msg.style.display = 'none', 3000);
+                setTimeout(() => { if(msg) msg.style.display = 'none'; }, 3000);
             }
 
             for(let i = objects.length - 1; i >= 0; i--) {
