@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pattern Avoidance - 극한의 정밀 컨트롤</title>
+    <title>Pattern Avoidance - 실시간 랭킹</title>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4133279395991822" crossorigin="anonymous"></script>
     <style>
         :root { --bg: #0c0c0c; --point: #f1c40f; --danger: #e74c3c; --text: #ffffff; --card: #1a1a1a; }
@@ -30,10 +30,13 @@
         #level-up-msg { position: absolute; right: -130px; color: var(--point); animation: blink 0.5s infinite; display: none; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
 
-        #ranking-board { width: 90%; max-width: 500px; background: var(--card); border-radius: 15px; padding: 20px; margin-top: 30px; border: 1px solid #333; }
-        .rank-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
-        .rank-table th { border-bottom: 2px solid #444; padding: 10px; color: var(--point); }
-        .rank-table td { padding: 10px; border-bottom: 1px solid #222; text-align: center; }
+        #ranking-board { width: 90%; max-width: 500px; background: var(--card); border-radius: 15px; padding: 20px; margin-top: 30px; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .rank-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 15px; }
+        .rank-table th { border-bottom: 2px solid #444; padding: 12px; color: var(--point); font-weight: 800; }
+        .rank-table td { padding: 12px; border-bottom: 1px solid #222; text-align: center; }
+        .rank-row:hover { background: #222; }
+        .rank-num { font-weight: bold; color: #777; }
+        .rank-1 { color: #f1c40f !important; font-size: 1.1em; }
 
         #version-tag { position: fixed; bottom: 10px; right: 10px; font-size: 12px; color: #333; }
     </style>
@@ -48,7 +51,7 @@
     <div id="game-container">
         <div id="start-screen" class="overlay">
             <h1 style="font-size: 2.2rem; margin: 0;">난이도 선택</h1>
-            <p style="color: #aaa;">멈춤 현상(Variable Error) 수정 완료</p>
+            <p style="color: #aaa;">실시간 랭킹 NaN 오류 수정 버전</p>
             <div class="difficulty-container">
                 <button class="btn-diff btn-easy" onclick="startGame('EASY')">EASY<br><span style="font-size:11px;">HP 15</span></button>
                 <button class="btn-diff btn-hard" onclick="startGame('HARD')">HARD<br><span style="font-size:11px;">HP 3 (HELL)</span></button>
@@ -60,7 +63,7 @@
             <h2 style="color: var(--danger); margin: 0;">GAME OVER</h2>
             <h1 id="result-time" style="font-size: 3.5rem; color: var(--point); margin: 10px 0;">0.0s</h1>
             <div id="save-form">
-                <input type="text" id="username" placeholder="이름 (익명)" maxlength="10" style="padding:15px; border-radius:8px; border:1px solid #444; background:#000; color:#fff; width:200px; text-align:center;">
+                <input type="text" id="username" placeholder="이름 입력" maxlength="10" style="padding:15px; border-radius:8px; border:1px solid #444; background:#000; color:#fff; width:200px; text-align:center;">
                 <br><br>
                 <button class="btn-main" id="save-btn" onclick="saveRecord()">기록 저장</button>
             </div>
@@ -76,15 +79,15 @@
         <canvas id="gameCanvas" width="400" height="400"></canvas>
 
         <div id="ranking-board">
-            <h3 style="margin: 0; text-align: center;">실시간 TOP 10 랭킹</h3>
+            <h3 style="margin: 0; padding: 10px; text-align: center; border-bottom: 1px solid #333;">🏆 실시간 TOP 10 랭킹</h3>
             <table class="rank-table">
-                <thead><tr><th>순위</th><th>이름</th><th>기록</th><th>난이도</th></tr></thead>
-                <tbody id="rank-list"><tr><td colspan="4">불러오는 중...</td></tr></tbody>
+                <thead><tr><th>순위</th><th>플레이어</th><th>기록</th><th>모드</th></tr></thead>
+                <tbody id="rank-list"><tr><td colspan="4" style="color:#555; padding:30px;">기록을 동기화 중입니다...</td></tr></tbody>
             </table>
         </div>
     </div>
 
-    <div id="version-tag">v1.1.20</div>
+    <div id="version-tag">v1.1.21</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -109,14 +112,29 @@
         let objects = [], keys = {}, startTime = 0, survivedTime = "0.0";
         let spawnTimers = [], lastUpdate = 0;
 
+        // 실시간 랭킹 리스너 (NaN 방지 로직 추가)
         const q = query(collection(db, "avoidance_rankings"), orderBy("score", "desc"), limit(10));
         onSnapshot(q, (snapshot) => {
             const list = document.getElementById('rank-list');
             list.innerHTML = "";
-            snapshot.forEach((doc, index) => {
+            let rank = 1;
+            snapshot.forEach((doc) => {
                 const data = doc.data();
-                list.innerHTML += `<tr><td>${index+1}</td><td>${data.name}</td><td>${data.score}s</td><td>${data.difficulty}</td></tr>`;
+                const scoreVal = parseFloat(data.score);
+                const displayScore = isNaN(scoreVal) ? "0.0" : scoreVal.toFixed(1);
+                const name = data.name || "익명";
+                const mode = data.difficulty || "EASY";
+                
+                list.innerHTML += `
+                    <tr class="rank-row">
+                        <td class="rank-num ${rank===1?'rank-1':''}">${rank}위</td>
+                        <td style="font-weight:600;">${name}</td>
+                        <td style="color:var(--point);">${displayScore}s</td>
+                        <td style="font-size:11px; color:#666;">${mode}</td>
+                    </tr>`;
+                rank++;
             });
+            if(rank === 1) list.innerHTML = "<tr><td colspan='4' style='padding:20px; color:#555;'>아직 기록이 없습니다.</td></tr>";
         });
 
         window.addEventListener('keydown', (e) => { 
@@ -150,9 +168,7 @@
                 if(count < 0) { 
                     clearInterval(readyInt); 
                     if(gameState !== 'END') {
-                        gameState = 'PLAY'; 
-                        startTime = Date.now(); 
-                        lastUpdate = Date.now();
+                        gameState = 'PLAY'; startTime = Date.now(); lastUpdate = Date.now();
                         spawnLaserLoop(); spawnHomingLoop(); gameLoop(); 
                     }
                 }
@@ -195,7 +211,6 @@
             const now = Date.now();
             const deltaTime = now - lastUpdate;
             lastUpdate = now;
-
             if(player.invul > 0) player.invul -= deltaTime;
 
             if(keys['KeyW'] && player.y > player.r) player.y -= player.speed;
@@ -208,7 +223,6 @@
             let curTime = parseFloat(survivedTime);
             document.getElementById('ui-timer').innerText = survivedTime + 's';
             
-            // 멈춤 현상 원인이었던 'cur' 변수 참조 오류 수정
             if((prevTime < 30 && curTime >= 30) || (prevTime < 60 && curTime >= 60)) {
                 const msg = document.getElementById('level-up-msg');
                 msg.style.display = 'block';
@@ -309,10 +323,17 @@
 
         window.saveRecord = async function() {
             const name = document.getElementById('username').value.trim() || "익명";
-            const btn = document.getElementById('save-btn'); btn.disabled = true;
+            const scoreNum = Number(parseFloat(survivedTime)); // 숫자로 확실히 변환
+            const btn = document.getElementById('save-btn'); 
+            btn.disabled = true;
             try {
-                await addDoc(collection(db, "avoidance_rankings"), { name, score: parseFloat(survivedTime), difficulty: diffMode, createdAt: serverTimestamp() });
-                document.getElementById('save-form').innerHTML = "<b>등록 완료!</b>";
+                await addDoc(collection(db, "avoidance_rankings"), { 
+                    name: name, 
+                    score: scoreNum, 
+                    difficulty: diffMode, 
+                    createdAt: serverTimestamp() 
+                });
+                document.getElementById('save-form').innerHTML = "<b style='color:#2ecc71;'>랭킹 등록 완료!</b>";
                 document.getElementById('retry-btn').style.display = 'block';
             } catch (e) { alert("저장 실패"); btn.disabled = false; }
         }
