@@ -13,6 +13,9 @@
         .btn-hub { padding: 10px 20px; background: transparent; color: var(--point); text-decoration: none; font-weight: bold; border: 2px solid var(--point); border-radius: 5px; transition: 0.3s; font-size: 14px; }
         .btn-hub:hover { background: var(--point); color: #000; }
 
+        #bgm-toggle { padding: 8px 15px; background: #222; color: #fff; border: 1px solid #444; border-radius: 5px; cursor: pointer; font-size: 12px; }
+        #bgm-toggle.on { border-color: var(--point); color: var(--point); }
+
         #game-container { position: relative; width: 100%; min-height: 650px; display: flex; justify-content: center; align-items: center; flex-direction: column; margin-top: 20px; }
         canvas { background: #000; border: 4px solid #fff; display: none; box-shadow: 0 0 25px rgba(255, 255, 255, 0.1); }
 
@@ -24,19 +27,16 @@
         .btn-easy { background: #2ecc71; color: #000; }
         .btn-hard { background: var(--danger); color: #fff; }
         
-        input { padding: 15px; font-size: 18px; border-radius: 8px; border: 1px solid #444; background: #000; color: #fff; width: 250px; text-align: center; margin-bottom: 10px; }
         .btn-main { padding: 15px 60px; font-size: 20px; background: var(--point); border: none; cursor: pointer; font-weight: bold; border-radius: 8px; transition: 0.2s; color: #000; }
 
         #status-ui { width: 400px; display: none; justify-content: space-between; font-size: 16px; font-weight: bold; margin-bottom: 10px; position: relative; }
         #level-up-msg { position: absolute; right: -130px; color: var(--point); animation: blink 0.5s infinite; display: none; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
 
-        /* 랭킹 스타일 */
         #ranking-board { width: 90%; max-width: 500px; background: var(--card); border-radius: 15px; padding: 20px; margin-top: 30px; border: 1px solid #333; }
-        .rank-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .rank-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
         .rank-table th { border-bottom: 2px solid #444; padding: 10px; color: var(--point); }
         .rank-table td { padding: 10px; border-bottom: 1px solid #222; text-align: center; }
-        .rank-item:nth-child(1) { color: #f1c40f; font-weight: bold; }
 
         #seo-content { width: 90%; max-width: 900px; padding: 60px 0; color: #777; line-height: 1.9; }
         .seo-box { background: #111; padding: 25px; border-radius: 10px; border-left: 4px solid var(--point); margin-bottom: 25px; }
@@ -47,13 +47,16 @@
 
     <header>
         <div style="font-size: 20px; font-weight: 900; letter-spacing: 1px;">PATTERN <span style="color: var(--point);">AVOIDANCE</span></div>
-        <a href="https://game-hub-steel-eight.vercel.app/" class="btn-hub">← GAME HUB 돌아가기</a>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <button id="bgm-toggle" onclick="toggleBGM()">BGM: OFF</button>
+            <a href="https://game-hub-steel-eight.vercel.app/" class="btn-hub">← GAME HUB 돌아가기</a>
+        </div>
     </header>
 
     <div id="game-container">
         <div id="start-screen" class="overlay">
             <h1 style="font-size: 2.2rem; margin: 0;">난이도 선택</h1>
-            <p style="color: #aaa;">BGM 재생 보강 및 실시간 랭킹 적용</p>
+            <p style="color: #aaa;">BGM 정책 대응 및 시작 버그 수정</p>
             <div class="difficulty-container">
                 <button class="btn-diff btn-easy" onclick="startGame('EASY')">EASY<br><span style="font-size:11px;">HP 15</span></button>
                 <button class="btn-diff btn-hard" onclick="startGame('HARD')">HARD<br><span style="font-size:11px;">HP 3 (HELL)</span></button>
@@ -65,8 +68,8 @@
             <h2 style="color: var(--danger); margin: 0;">GAME OVER</h2>
             <h1 id="result-time" style="font-size: 3.5rem; color: var(--point); margin: 10px 0;">0.0s</h1>
             <div id="save-form">
-                <input type="text" id="username" placeholder="이름 (미입력 시 익명)" maxlength="10">
-                <br>
+                <input type="text" id="username" placeholder="이름 (익명)" maxlength="10" style="padding:15px; border-radius:8px; border:1px solid #444; background:#000; color:#fff; width:200px; text-align:center;">
+                <br><br>
                 <button class="btn-main" id="save-btn" onclick="saveRecord()">기록 저장</button>
             </div>
             <button class="btn-main" onclick="location.reload()" style="display:none; background: #333; color: #fff; margin-top: 10px;" id="retry-btn">다시 시도</button>
@@ -83,28 +86,20 @@
         <div id="ranking-board">
             <h3 style="margin: 0; text-align: center;">실시간 TOP 10 랭킹</h3>
             <table class="rank-table">
-                <thead>
-                    <tr><th>순위</th><th>이름</th><th>기록</th><th>난이도</th></tr>
-                </thead>
-                <tbody id="rank-list">
-                    <tr><td colspan="4">데이터를 불러오는 중...</td></tr>
-                </tbody>
+                <thead><tr><th>순위</th><th>이름</th><th>기록</th><th>난이도</th></tr></thead>
+                <tbody id="rank-list"><tr><td colspan="4">불러오는 중...</td></tr></tbody>
             </table>
         </div>
     </div>
 
     <section id="seo-content">
         <div class="seo-box">
-            <h3>패턴 피하기(Pattern Avoidance) v1.1.17: 실시간 랭킹 시스템</h3>
-            <p>전 세계 플레이어들과 실시간으로 경쟁할 수 있는 랭킹 보드가 도입되었습니다. Firebase 기반의 데이터 동기화를 통해 당신이 세운 0.1초의 기록까지 완벽하게 보존됩니다. 이제 단순한 연습을 넘어 최고의 회피 마스터가 누구인지 증명해 보세요.</p>
-        </div>
-        <div class="seo-box">
-            <h3>BGM 및 시스템 가이드</h3>
-            <p>신나는 8비트 사운드트랙과 함께 게임에 몰입해 보세요. 피격 시 제공되는 1초의 무적 시간과 점멸 효과를 적극적으로 활용해야 고득점이 가능합니다. 특히 60초 이후에 쏟아지는 방사형 탄환과 레이저의 복합 패턴은 극한의 피지컬을 요구합니다.</p>
+            <h3>패턴 피하기(Pattern Avoidance) v1.1.18: 시스템 안정화</h3>
+            <p>브라우저의 자동 재생 정책을 우회하기 위해 상단에 <b>BGM 컨트롤 토글</b>을 추가했습니다. 또한, 게임 시작 시 발생하던 렌더링 딜레이를 해결하여 3, 2, 1 카운트다운 직후 게임이 즉시 구동되도록 로직을 전면 재검토했습니다.</p>
         </div>
     </section>
 
-    <div id="version-tag">v1.1.17</div>
+    <div id="version-tag">v1.1.18</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -123,8 +118,6 @@
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        
-        // BGM 소스 교체 및 재생 강화
         const bgm = new Audio('https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Monplaisir/Heat_of_the_Summer/Monplaisir_-_03_-_Level_1.mp3');
         bgm.loop = true;
 
@@ -133,16 +126,27 @@
         let objects = [], keys = {}, startTime = 0, survivedTime = "0.0";
         let spawnTimers = [], lastUpdate = 0;
 
-        // 랭킹 리스너 (실시간 업데이트)
         const q = query(collection(db, "avoidance_rankings"), orderBy("score", "desc"), limit(10));
         onSnapshot(q, (snapshot) => {
             const list = document.getElementById('rank-list');
             list.innerHTML = "";
             snapshot.forEach((doc, index) => {
                 const data = doc.data();
-                list.innerHTML += `<tr class="rank-item"><td>${index+1}</td><td>${data.name}</td><td>${data.score}s</td><td>${data.difficulty}</td></tr>`;
+                list.innerHTML += `<tr><td>${index+1}</td><td>${data.name}</td><td>${data.score}s</td><td>${data.difficulty}</td></tr>`;
             });
         });
+
+        window.toggleBGM = function() {
+            if (bgm.paused) {
+                bgm.play();
+                document.getElementById('bgm-toggle').innerText = "BGM: ON";
+                document.getElementById('bgm-toggle').classList.add('on');
+            } else {
+                bgm.pause();
+                document.getElementById('bgm-toggle').innerText = "BGM: OFF";
+                document.getElementById('bgm-toggle').classList.remove('on');
+            }
+        };
 
         window.addEventListener('keydown', (e) => { 
             keys[e.code] = true; 
@@ -153,16 +157,19 @@
         window.startGame = function(mode) {
             diffMode = mode;
             player.hp = (mode === 'EASY') ? 15 : 3;
-            player.invul = 0;
+            player.x = 200; player.y = 200; player.invul = 0;
+            objects = []; survivedTime = "0.0";
             document.getElementById('hp-val').innerText = player.hp;
-            document.getElementById('ui-diff-label').innerText = 'MODE: ' + mode;
             document.getElementById('start-screen').style.display = 'none';
             document.getElementById('status-ui').style.display = 'flex';
             canvas.style.display = 'block';
             
-            // 상호작용 후 BGM 재생
-            bgm.play().catch(e => console.log("BGM Play blocked:", e));
-            
+            // BGM 자동 시도 및 버튼 상태 갱신
+            bgm.play().then(() => {
+                document.getElementById('bgm-toggle').innerText = "BGM: ON";
+                document.getElementById('bgm-toggle').classList.add('on');
+            }).catch(() => {});
+
             startReady();
         }
 
@@ -177,7 +184,9 @@
                 if(count < 0) { 
                     clearInterval(readyInt); 
                     if(gameState !== 'END') {
-                        gameState = 'PLAY'; startTime = Date.now(); lastUpdate = Date.now();
+                        gameState = 'PLAY'; 
+                        startTime = Date.now(); 
+                        lastUpdate = Date.now();
                         spawnLaserLoop(); spawnHomingLoop(); gameLoop(); 
                     }
                 }
@@ -188,13 +197,11 @@
         function spawnLaserLoop() {
             if(gameState !== 'PLAY') return;
             const t = parseFloat(survivedTime);
-            const rand = Math.random();
-            if(t > 40 && rand < 0.3) spawnX();
-            else if(t > 20 && rand < 0.5) spawnCross();
+            if(t > 40 && Math.random() < 0.3) spawnX();
+            else if(t > 20 && Math.random() < 0.5) spawnCross();
             else spawnLaser();
             let base = (diffMode === 'EASY') ? 800 : 500;
-            let itv = Math.max(150, base - (t * 12));
-            spawnTimers.push(setTimeout(spawnLaserLoop, itv));
+            spawnTimers.push(setTimeout(spawnLaserLoop, Math.max(150, base - (t * 12))));
         }
 
         function spawnHomingLoop() {
@@ -203,8 +210,7 @@
             if(t > 45 && Math.random() < 0.4) spawnRadial();
             else spawnHoming();
             let base = (diffMode === 'EASY') ? 1200 : 700;
-            let itv = Math.max(300, base - (t * 15));
-            spawnTimers.push(setTimeout(spawnHomingLoop, itv));
+            spawnTimers.push(setTimeout(spawnHomingLoop, Math.max(300, base - (t * 15))));
         }
 
         function spawnLaser() { objects.push({ type: 'LASER', sub: Math.random()>0.5?'H':'V', pos: Math.random()*380+10, stage: 'WARN', timer: Date.now() }); }
@@ -220,7 +226,6 @@
         function spawnRadial() { objects.push({ type: 'RADIAL', x: 200, y: 200, stage: 'FIRE', timer: Date.now() }); }
 
         function update() {
-            if(gameState !== 'PLAY') return;
             const now = Date.now();
             const deltaTime = now - lastUpdate;
             lastUpdate = now;
@@ -232,15 +237,9 @@
             if(keys['KeyA'] && player.x > player.r) player.x -= player.speed;
             if(keys['KeyD'] && player.x < 400 - player.r) player.x += player.speed;
 
-            let prev = parseFloat(survivedTime);
             survivedTime = ((now - startTime) / 1000).toFixed(1);
             document.getElementById('ui-timer').innerText = survivedTime + 's';
             
-            if((prev < 30 && cur >= 30) || (prev < 60 && cur >= 60)) {
-                document.getElementById('level-up-msg').style.display = 'block';
-                setTimeout(() => document.getElementById('level-up-msg').style.display = 'none', 3000);
-            }
-
             for(let i = objects.length - 1; i >= 0; i--) {
                 let o = objects[i];
                 const warnDur = (diffMode === 'EASY') ? 700 : 500;
@@ -323,7 +322,7 @@
         function endGame() {
             if(gameState === 'END') return;
             gameState = 'END';
-            bgm.pause(); bgm.currentTime = 0;
+            bgm.pause();
             if(animationId) cancelAnimationFrame(animationId);
             spawnTimers.forEach(clearTimeout);
             canvas.style.display = 'none';
@@ -337,7 +336,7 @@
             const btn = document.getElementById('save-btn'); btn.disabled = true;
             try {
                 await addDoc(collection(db, "avoidance_rankings"), { name, score: parseFloat(survivedTime), difficulty: diffMode, createdAt: serverTimestamp() });
-                document.getElementById('save-form').innerHTML = "<b>기록 등록 완료!</b>";
+                document.getElementById('save-form').innerHTML = "<b>등록 완료!</b>";
                 document.getElementById('retry-btn').style.display = 'block';
             } catch (e) { alert("저장 실패"); btn.disabled = false; }
         }
