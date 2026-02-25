@@ -9,7 +9,6 @@
         :root { --bg: #0c0c0c; --point: #f1c40f; --danger: #e74c3c; --text: #ffffff; --card: #1a1a1a; }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Pretendard', sans-serif; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; }
         
-        /* 상단 바 복구 */
         header { width: 100%; height: 65px; background: #000; border-bottom: 1px solid #333; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; box-sizing: border-box; position: sticky; top: 0; z-index: 1000; }
         .btn-hub { padding: 10px 20px; background: transparent; color: var(--point); text-decoration: none; font-weight: bold; border: 2px solid var(--point); border-radius: 5px; transition: 0.3s; font-size: 14px; }
         .btn-hub:hover { background: var(--point); color: #000; }
@@ -32,7 +31,6 @@
         #level-up-msg { position: absolute; right: -130px; color: var(--point); animation: blink 0.5s infinite; display: none; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
 
-        /* SEO 복구 */
         #seo-content { width: 90%; max-width: 900px; padding: 60px 0; color: #777; line-height: 1.9; }
         .seo-box { background: #111; padding: 25px; border-radius: 10px; border-left: 4px solid var(--point); margin-bottom: 20px; }
         #version-tag { position: fixed; bottom: 10px; right: 10px; font-size: 12px; color: #333; }
@@ -48,7 +46,7 @@
     <div id="game-container">
         <div id="start-screen" class="overlay">
             <h1 style="font-size: 2.2rem; margin: 0;">난이도 선택</h1>
-            <p style="color: #aaa;">플레이어 속도 2.0 | ESC 즉시 종료 지원</p>
+            <p style="color: #aaa;">추적 궤도 라인 복구 | 속도 2.0</p>
             <div class="difficulty-container">
                 <button class="btn-diff btn-easy" onclick="startGame('EASY')">EASY<br><span style="font-size:11px;">HP 15</span></button>
                 <button class="btn-diff btn-hard" onclick="startGame('HARD')">HARD<br><span style="font-size:11px;">HP 3 (HELL)</span></button>
@@ -78,7 +76,7 @@
 
     <section id="seo-content">
         <div class="seo-box">
-            <h3>패턴 피하기(Pattern Avoidance) v1.1.12 가이드</h3>
+            <h3>패턴 피하기(Pattern Avoidance) v1.1.13 가이드</h3>
             <p>본 게임은 게이머의 미세 무빙과 시각적 예측 능력을 극대화하기 위해 설계된 언더테일 스타일의 탄막 피하기 훈련 도구입니다. 2.0의 낮은 이동 속도는 플레이어에게 정확한 타이밍과 경로 선택을 강요하며, 이는 실제 게임 상황에서의 생존율 향상으로 이어집니다.</p>
         </div>
         <div class="seo-box">
@@ -87,7 +85,7 @@
         </div>
     </section>
 
-    <div id="version-tag">v1.1.12</div>
+    <div id="version-tag">v1.1.13</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -152,9 +150,10 @@
             if(gameState !== 'PLAY') return;
             const t = parseFloat(survivedTime);
             const rand = Math.random();
-            if(t > 40 && rand < 0.3) { spawnX(); }
-            else if(t > 20 && rand < 0.5) { spawnCross(); }
-            else { spawnLaser(); }
+            if(t > 40 && rand < 0.3) spawnX();
+            else if(t > 20 && rand < 0.5) spawnCross();
+            else spawnLaser();
+            
             let base = (diffMode === 'EASY') ? 800 : 500;
             let itv = Math.max(150, base - (t * 12));
             spawnTimers.push(setTimeout(spawnLaserLoop, itv));
@@ -163,8 +162,9 @@
         function spawnHomingLoop() {
             if(gameState !== 'PLAY') return;
             const t = parseFloat(survivedTime);
-            if(t > 45 && Math.random() < 0.4) { spawnRadial(); }
-            else { spawnHoming(); }
+            if(t > 45 && Math.random() < 0.4) spawnRadial();
+            else spawnHoming();
+
             let base = (diffMode === 'EASY') ? 1200 : 700;
             let itv = Math.max(300, base - (t * 15));
             spawnTimers.push(setTimeout(spawnHomingLoop, itv));
@@ -254,8 +254,15 @@
                     else if(o.sub === 'X2') { ctx.moveTo(400,0); ctx.lineTo(0,400); }
                     ctx.stroke();
                 } else if(o.type === 'HOMING') {
-                    if(o.stage === 'WARN') { ctx.fillStyle = "rgba(231,76,60,0.3)"; ctx.arc(o.x,o.y,4,0,Math.PI*2); ctx.fill(); }
-                    else { ctx.fillStyle = "#f1c40f"; ctx.arc(o.x,o.y,6,0,Math.PI*2); ctx.fill(); }
+                    if(o.stage === 'WARN') { 
+                        // 추적 궤도 라인 (다시 추가)
+                        ctx.strokeStyle = "rgba(231,76,60,0.4)"; ctx.lineWidth = 1; ctx.setLineDash([2,4]);
+                        ctx.moveTo(o.x, o.y); ctx.lineTo(player.x, player.y); ctx.stroke();
+                        ctx.setLineDash([]);
+                        ctx.fillStyle = "rgba(231,76,60,0.3)"; ctx.beginPath(); ctx.arc(o.x,o.y,4,0,Math.PI*2); ctx.fill(); 
+                    } else { 
+                        ctx.fillStyle = "#f1c40f"; ctx.beginPath(); ctx.arc(o.x,o.y,6,0,Math.PI*2); ctx.fill(); 
+                    }
                 } else if(o.type === 'RADIAL' && o.bullets) {
                     ctx.fillStyle = "#3498db"; o.bullets.forEach(b => { ctx.beginPath(); ctx.arc(b.x,b.y,4,0,Math.PI*2); ctx.fill(); });
                 }
@@ -269,7 +276,7 @@
         function endGame() {
             if(gameState === 'END') return;
             gameState = 'END';
-            cancelAnimationFrame(animationId);
+            if(animationId) cancelAnimationFrame(animationId);
             spawnTimers.forEach(clearTimeout);
             canvas.style.display = 'none';
             document.getElementById('status-ui').style.display = 'none';
