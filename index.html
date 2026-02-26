@@ -3,18 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pattern Avoidance - 정밀 조작 및 랭킹</title>
+    <title>Pattern Avoidance - 정밀 조작 v1.1.29</title>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4133279395991822" crossorigin="anonymous"></script>
     <style>
         :root { --bg: #0c0c0c; --point: #f1c40f; --danger: #e74c3c; --text: #ffffff; --card: #1a1a1a; }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Pretendard', sans-serif; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; touch-action: manipulation; }
         
-        /* 광고 슬롯 (최상단 1개만 배치) */
         .ad-slot-top { width: 100%; max-width: 728px; height: 90px; background: transparent; margin: 5px 0; display: flex; align-items: center; justify-content: center; border: 1px dashed #333; overflow: hidden; }
 
         header { width: 100%; height: auto; min-height: 70px; background: #000; border-bottom: 1px solid #333; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; padding: 10px 20px; box-sizing: border-box; position: sticky; top: 0; z-index: 1000; gap: 10px; }
         
-        /* BGM 컨트롤 영역 */
         .bgm-ctrl { display: flex; align-items: center; gap: 8px; background: #222; padding: 5px 12px; border-radius: 20px; border: 1px solid #444; }
         .bgm-ctrl span { font-size: 11px; font-weight: bold; color: var(--point); }
         #volume-slider { width: 60px; accent-color: var(--point); cursor: pointer; }
@@ -24,10 +22,9 @@
         #game-container { position: relative; width: 100%; max-width: 400px; display: flex; justify-content: center; align-items: center; flex-direction: column; margin-top: 5px; }
         canvas { background: #000; border: 3px solid #fff; display: none; width: 100%; aspect-ratio: 1/1; box-shadow: 0 0 25px rgba(255, 255, 255, 0.1); touch-action: none; }
 
-        /* 모바일 중앙 방향키 */
         #mobile-controls { display: none; width: 100%; max-width: 400px; margin-top: 20px; padding-bottom: 20px; z-index: 2000; }
         .d-pad { display: grid; grid-template-columns: repeat(3, 70px); grid-template-rows: repeat(3, 70px); gap: 8px; justify-content: center; }
-        .ctrl-btn { width: 70px; height: 70px; background: rgba(255, 255, 255, 0.12); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #fff; }
+        .ctrl-btn { width: 70px; height: 70px; background: rgba(255, 255, 255, 0.12); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #fff; user-select: none; -webkit-user-select: none; }
         .ctrl-btn:active { background: rgba(255, 255, 255, 0.4); border-color: var(--point); }
         .btn-up { grid-column: 2; grid-row: 1; }
         .btn-left { grid-column: 1; grid-row: 2; }
@@ -42,7 +39,6 @@
 
         #status-ui { width: 95%; display: none; justify-content: space-between; font-size: 14px; font-weight: bold; margin-bottom: 8px; }
         
-        /* 랭킹 보드 디자인 개선 */
         #ranking-board { width: 95%; background: var(--card); border-radius: 15px; margin-top: 20px; border: 1px solid #333; overflow: hidden; }
         .rank-tabs { display: flex; background: #222; }
         .rank-tab-btn { flex: 1; padding: 12px; border: none; background: transparent; color: #777; font-weight: bold; cursor: pointer; }
@@ -50,8 +46,6 @@
         .rank-table { width: 100%; border-collapse: collapse; font-size: 13px; }
         .rank-table td { padding: 12px; border-bottom: 1px solid #222; text-align: center; }
 
-        #seo-section { width: 90%; max-width: 800px; margin-top: 40px; padding-bottom: 80px; color: #ccc; line-height: 1.8; }
-        .seo-content-box { background: #111; padding: 25px; border-radius: 15px; border-left: 5px solid var(--point); margin-bottom: 20px; }
         #version-tag { position: fixed; bottom: 5px; right: 5px; font-size: 10px; color: #444; }
 
         @media (max-width: 600px) { #mobile-controls { display: block; } }
@@ -65,13 +59,11 @@
 
     <header>
         <div style="font-size: 16px; font-weight: 900;">PATTERN <span style="color: var(--point);">AVOIDANCE</span></div>
-        
         <div class="bgm-ctrl">
             <span>BGM</span>
             <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5">
             <button id="bgm-toggle" style="background:none; border:none; color:#fff; cursor:pointer; font-size:12px;">🔈</button>
         </div>
-
         <a href="https://game-hub-steel-eight.vercel.app/" class="btn-hub">HUB</a>
     </header>
 
@@ -82,7 +74,7 @@
                 <button class="btn-diff btn-easy" onclick="startGame('EASY')">EASY</button>
                 <button class="btn-diff btn-hard" onclick="startGame('HARD')">HARD</button>
             </div>
-            <p style="font-size: 12px; color: #888; margin-top:15px;">※ BGM은 첫 화면 클릭 시 재생됩니다.</p>
+            <p style="font-size: 12px; color: #888; margin-top:15px;">ESC를 누르면 게임이 종료됩니다.</p>
         </div>
 
         <div id="result-screen" class="overlay" style="display:none;">
@@ -106,10 +98,10 @@
 
         <div id="mobile-controls">
             <div class="d-pad">
-                <div class="ctrl-btn btn-up" ontouchstart="handleTouch('KeyW', true)" ontouchend="handleTouch('KeyW', false)" ontouchcancel="handleTouch('KeyW', false)">↑</div>
-                <div class="ctrl-btn btn-left" ontouchstart="handleTouch('KeyA', true)" ontouchend="handleTouch('KeyA', false)" ontouchcancel="handleTouch('KeyA', false)">←</div>
-                <div class="ctrl-btn btn-right" ontouchstart="handleTouch('KeyD', true)" ontouchend="handleTouch('KeyD', false)" ontouchcancel="handleTouch('KeyD', false)">→</div>
-                <div class="ctrl-btn btn-down" ontouchstart="handleTouch('KeyS', true)" ontouchend="handleTouch('KeyS', false)" ontouchcancel="handleTouch('KeyS', false)">↓</div>
+                <div class="ctrl-btn btn-up" ontouchstart="handleTouch('KeyW', true)" ontouchend="handleTouch('KeyW', false)">↑</div>
+                <div class="ctrl-btn btn-left" ontouchstart="handleTouch('KeyA', true)" ontouchend="handleTouch('KeyA', false)">←</div>
+                <div class="ctrl-btn btn-right" ontouchstart="handleTouch('KeyD', true)" ontouchend="handleTouch('KeyD', false)">→</div>
+                <div class="ctrl-btn btn-down" ontouchstart="handleTouch('KeyS', true)" ontouchend="handleTouch('KeyS', false)">↓</div>
             </div>
         </div>
 
@@ -124,30 +116,11 @@
         </div>
     </div>
 
-    <section id="seo-section">
-        <div class="seo-content-box">
-            <h2>웹 브라우저 탄막 피하기 게임의 정석</h2>
-            <p>패턴 어보이던스(Pattern Avoidance)는 순수하게 사용자의 반응 속도와 판단력을 시험하는 <b>무료 웹 게임</b>입니다. 복잡한 설치 과정 없이 HTML5 기반으로 구동되며, 특히 모바일과 PC 환경 모두에서 최적화된 플레이 경험을 제공하기 위해 설계되었습니다. 이지 모드와 하드 모드를 통해 자신의 한계를 시험해보세요.</p>
-            <h3>핵심 게임 메커니즘</h3>
-            <p>게임은 시간이 지날수록 레이저, 유도탄, 방사형 탄막의 밀도가 기하급수적으로 높아집니다. 특히 하드 모드에서 구현된 <b>중력 시스템</b>은 플레이어의 이동 속도에 직접적인 변화를 주어, 일반적인 회피 게임과는 차별화된 고난도 경험을 선사합니다.</p>
-        </div>
-        <div class="seo-content-box">
-            <h2>전 세계 플레이어와 경쟁하는 리더보드</h2>
-            <p>파이어베이스(Firebase) 기반의 실시간 랭킹 시스템을 통해 전 세계 플레이어들과 기록을 공유하세요. 이지 모드와 하드 모드의 리더보드가 분리되어 있어, 각 모드별 정점에 도전할 수 있습니다. 이름만 입력하면 즉시 자신의 기록을 데이터베이스에 저장하고 확인이 가능합니다.</p>
-            <h3>업데이트 v1.1.27 변경점</h3>
-            <ul>
-                <li>실시간 랭킹 로딩 로직 안정화: 이제 순위가 즉각적으로 표시됩니다.</li>
-                <li>배경음악(BGM) 추가: 몰입감을 높여주는 사운드트랙과 볼륨 조절 기능이 포함되었습니다.</li>
-                <li>광고 슬롯 최적화: 최상단 배치로 가독성을 확보했습니다.</li>
-            </ul>
-        </div>
-    </section>
-
     <audio id="gameBgm" loop preload="auto">
         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
     </audio>
 
-    <div id="version-tag">v1.1.27</div>
+    <div id="version-tag">v1.1.29</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -173,51 +146,50 @@
         let player = { x: 200, y: 200, r: 6, hp: 15, speed: 2.3, invul: 0 };
         let objects = [], keys = {}, startTime = 0, survivedTime = "0.0";
         let spawnTimers = [], lastUpdate = 0;
-        let currentRankTab = 'EASY';
 
-        // BGM 로직
+        // 탭 전환 시 소리 끄기/켜기
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) { bgm.pause(); }
+            else if (gameState !== 'WAIT' && gameState !== 'END') { bgm.play(); }
+        });
+
         volSlider.oninput = (e) => { bgm.volume = e.target.value; };
-        document.body.addEventListener('click', () => { if(bgm.paused) bgm.play(); }, { once: true });
+        document.body.addEventListener('click', () => { if(bgm.paused && gameState !== 'END') bgm.play(); }, { once: true });
 
+        // 정밀 조작: 키 상태를 즉각 반영
         window.handleTouch = (code, isPressed) => {
             if(!isPressed) delete keys[code];
             else keys[code] = true;
         };
 
-        // 랭킹 시스템 (안전한 클라이언트 측 정렬 방식 채택)
         async function loadRankings(mode) {
             const list = document.getElementById('rank-list');
-            list.innerHTML = "<tr><td colspan='3' style='padding:20px; color:#555;'>데이터 불러오는 중...</td></tr>";
-            
+            list.innerHTML = "<tr><td colspan='3' style='padding:20px; color:#555;'>로딩 중...</td></tr>";
             try {
                 const q = query(collection(db, "avoidance_rankings"), where("difficulty", "==", mode));
-                const querySnapshot = await getDocs(q);
+                const snap = await getDocs(q);
                 let ranks = [];
-                querySnapshot.forEach((doc) => ranks.push(doc.data()));
-                
-                // 점수 기준 정렬
+                snap.forEach((doc) => ranks.push(doc.data()));
                 ranks.sort((a, b) => b.score - a.score);
-                
                 list.innerHTML = "";
                 ranks.slice(0, 10).forEach((data, i) => {
                     list.innerHTML += `<tr><td style="width:50px">${i+1}위</td><td style="text-align:left; font-weight:600">${data.name||'익명'}</td><td style="color:var(--point); text-align:right">${(parseFloat(data.score)||0).toFixed(1)}s</td></tr>`;
                 });
-                if(ranks.length === 0) list.innerHTML = "<tr><td colspan='3' style='padding:20px; color:#555;'>기록이 없습니다.</td></tr>";
-            } catch (e) { 
-                console.error(e);
-                list.innerHTML = "<tr><td colspan='3' style='padding:20px; color:red;'>로드 오류</td></tr>";
-            }
+                if(ranks.length === 0) list.innerHTML = "<tr><td colspan='3' style='padding:20px; color:#555;'>기록 없음</td></tr>";
+            } catch (e) { list.innerHTML = "<tr><td colspan='3' style='padding:20px; color:red;'>에러</td></tr>"; }
         }
 
         window.switchRankTab = (mode) => {
-            currentRankTab = mode;
             document.getElementById('tab-easy').className = mode === 'EASY' ? 'rank-tab-btn active' : 'rank-tab-btn';
             document.getElementById('tab-hard').className = mode === 'HARD' ? 'rank-tab-btn active' : 'rank-tab-btn';
             loadRankings(mode);
         }
         switchRankTab('EASY');
 
-        window.addEventListener('keydown', (e) => { keys[e.code] = true; });
+        window.addEventListener('keydown', (e) => { 
+            keys[e.code] = true; 
+            if(e.code === 'Escape' && gameState === 'PLAY') endGame(); 
+        });
         window.addEventListener('keyup', (e) => { delete keys[e.code]; });
 
         window.startGame = (mode) => {
@@ -229,7 +201,7 @@
             document.getElementById('start-screen').style.display = 'none';
             document.getElementById('status-ui').style.display = 'flex';
             canvas.style.display = 'block';
-            if(bgm.paused) bgm.play();
+            bgm.play();
             startReady();
         }
 
@@ -293,6 +265,7 @@
             lastUpdate = now;
             if(player.invul > 0) player.invul -= dt;
 
+            // 정밀 조작 반영
             if(keys['KeyW'] && player.y > player.r) player.y -= player.speed;
             if(keys['KeyS'] && player.y < 400 - player.r) player.y += player.speed;
             if(keys['KeyA'] && player.x > player.r) player.x -= player.speed;
@@ -390,6 +363,7 @@
             document.getElementById('status-ui').style.display = 'none';
             document.getElementById('result-screen').style.display = 'flex';
             document.getElementById('result-time').innerText = survivedTime + 's';
+            bgm.pause(); bgm.currentTime = 0;
             switchRankTab(diffMode);
         }
 
