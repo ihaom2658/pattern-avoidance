@@ -3,25 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pattern Avoidance - 극한 패턴 피하기</title>
+    <title>Pattern Avoidance - 정밀 조작 및 랭킹</title>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4133279395991822" crossorigin="anonymous"></script>
     <style>
         :root { --bg: #0c0c0c; --point: #f1c40f; --danger: #e74c3c; --text: #ffffff; --card: #1a1a1a; }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Pretendard', sans-serif; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; touch-action: manipulation; }
         
-        /* 광고 슬롯 스타일 */
-        .ad-slot { width: 100%; max-width: 400px; height: 100px; background: #222; margin: 10px 0; display: flex; align-items: center; justify-content: center; color: #555; font-size: 12px; border: 1px dashed #444; }
+        /* 광고 슬롯 (최상단 1개만 배치) */
+        .ad-slot-top { width: 100%; max-width: 728px; height: 90px; background: transparent; margin: 5px 0; display: flex; align-items: center; justify-content: center; border: 1px dashed #333; overflow: hidden; }
 
-        header { width: 100%; height: 70px; background: #000; border-bottom: 1px solid #333; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-sizing: border-box; position: sticky; top: 0; z-index: 1000; }
-        .btn-hub { padding: 10px 25px; background: var(--point); color: #000; text-decoration: none; font-weight: 900; border-radius: 8px; transition: 0.3s; font-size: 15px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.3); }
+        header { width: 100%; height: auto; min-height: 70px; background: #000; border-bottom: 1px solid #333; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; padding: 10px 20px; box-sizing: border-box; position: sticky; top: 0; z-index: 1000; gap: 10px; }
+        
+        /* BGM 컨트롤 영역 */
+        .bgm-ctrl { display: flex; align-items: center; gap: 8px; background: #222; padding: 5px 12px; border-radius: 20px; border: 1px solid #444; }
+        .bgm-ctrl span { font-size: 11px; font-weight: bold; color: var(--point); }
+        #volume-slider { width: 60px; accent-color: var(--point); cursor: pointer; }
 
-        #game-container { position: relative; width: 100%; max-width: 400px; display: flex; justify-content: center; align-items: center; flex-direction: column; margin-top: 10px; }
+        .btn-hub { padding: 8px 18px; background: var(--point); color: #000; text-decoration: none; font-weight: 900; border-radius: 6px; font-size: 13px; }
+
+        #game-container { position: relative; width: 100%; max-width: 400px; display: flex; justify-content: center; align-items: center; flex-direction: column; margin-top: 5px; }
         canvas { background: #000; border: 3px solid #fff; display: none; width: 100%; aspect-ratio: 1/1; box-shadow: 0 0 25px rgba(255, 255, 255, 0.1); touch-action: none; }
 
         /* 모바일 중앙 방향키 */
-        #mobile-controls { display: none; width: 100%; max-width: 400px; margin-top: 25px; padding-bottom: 30px; z-index: 2000; }
-        .d-pad { display: grid; grid-template-columns: repeat(3, 70px); grid-template-rows: repeat(3, 70px); gap: 5px; justify-content: center; align-items: center; }
-        .ctrl-btn { width: 70px; height: 70px; background: rgba(255, 255, 255, 0.15); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #fff; user-select: none; -webkit-user-select: none; }
+        #mobile-controls { display: none; width: 100%; max-width: 400px; margin-top: 20px; padding-bottom: 20px; z-index: 2000; }
+        .d-pad { display: grid; grid-template-columns: repeat(3, 70px); grid-template-rows: repeat(3, 70px); gap: 8px; justify-content: center; }
+        .ctrl-btn { width: 70px; height: 70px; background: rgba(255, 255, 255, 0.12); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #fff; }
         .ctrl-btn:active { background: rgba(255, 255, 255, 0.4); border-color: var(--point); }
         .btn-up { grid-column: 2; grid-row: 1; }
         .btn-left { grid-column: 1; grid-row: 2; }
@@ -29,16 +35,14 @@
         .btn-down { grid-column: 2; grid-row: 3; }
 
         .overlay { text-align: center; background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid #333; width: 90%; box-sizing: border-box; }
-        .btn-diff { padding: 15px 0; font-size: 18px; border: none; cursor: pointer; font-weight: bold; border-radius: 8px; flex: 1; }
+        .btn-diff { padding: 15px 0; font-size: 18px; border: none; font-weight: bold; border-radius: 8px; flex: 1; cursor: pointer; }
         .btn-easy { background: #2ecc71; color: #000; }
         .btn-hard { background: var(--danger); color: #fff; }
-        .btn-main { padding: 15px 40px; font-size: 18px; background: var(--point); border: none; font-weight: bold; border-radius: 8px; color: #000; }
+        .btn-main { padding: 15px 40px; font-size: 18px; background: var(--point); border: none; font-weight: bold; border-radius: 8px; color: #000; cursor: pointer; }
 
-        #status-ui { width: 95%; display: none; justify-content: space-between; font-size: 14px; font-weight: bold; margin-bottom: 8px; position: relative; }
-        #level-up-msg { position: absolute; top: -30px; width: 100%; text-align: center; color: var(--point); animation: blink 0.5s infinite; display: none; }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
-
-        /* 랭킹 보드 */
+        #status-ui { width: 95%; display: none; justify-content: space-between; font-size: 14px; font-weight: bold; margin-bottom: 8px; }
+        
+        /* 랭킹 보드 디자인 개선 */
         #ranking-board { width: 95%; background: var(--card); border-radius: 15px; margin-top: 20px; border: 1px solid #333; overflow: hidden; }
         .rank-tabs { display: flex; background: #222; }
         .rank-tab-btn { flex: 1; padding: 12px; border: none; background: transparent; color: #777; font-weight: bold; cursor: pointer; }
@@ -46,12 +50,8 @@
         .rank-table { width: 100%; border-collapse: collapse; font-size: 13px; }
         .rank-table td { padding: 12px; border-bottom: 1px solid #222; text-align: center; }
 
-        /* SEO 섹션 상세화 */
         #seo-section { width: 90%; max-width: 800px; margin-top: 40px; padding-bottom: 80px; color: #ccc; line-height: 1.8; }
-        .seo-content-box { background: #111; padding: 30px; border-radius: 15px; border-left: 5px solid var(--point); margin-bottom: 25px; }
-        .seo-content-box h2 { color: var(--point); margin-top: 0; font-size: 1.5rem; }
-        .seo-content-box h3 { color: #fff; font-size: 1.1rem; margin-top: 20px; }
-        
+        .seo-content-box { background: #111; padding: 25px; border-radius: 15px; border-left: 5px solid var(--point); margin-bottom: 20px; }
         #version-tag { position: fixed; bottom: 5px; right: 5px; font-size: 10px; color: #444; }
 
         @media (max-width: 600px) { #mobile-controls { display: block; } }
@@ -59,12 +59,21 @@
 </head>
 <body>
 
-    <header>
-        <div style="font-size: 18px; font-weight: 900;">PATTERN <span style="color: var(--point);">AVOIDANCE</span></div>
-        <a href="https://game-hub-steel-eight.vercel.app/" class="btn-hub">GAME HUB 돌아가기</a>
-    </header>
+    <div class="ad-slot-top">
+        <span style="color:#444; font-size:11px;">ADVERTISEMENT</span>
+    </div>
 
-    <div class="ad-slot">광고 슬롯 - 상단 헤더</div>
+    <header>
+        <div style="font-size: 16px; font-weight: 900;">PATTERN <span style="color: var(--point);">AVOIDANCE</span></div>
+        
+        <div class="bgm-ctrl">
+            <span>BGM</span>
+            <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5">
+            <button id="bgm-toggle" style="background:none; border:none; color:#fff; cursor:pointer; font-size:12px;">🔈</button>
+        </div>
+
+        <a href="https://game-hub-steel-eight.vercel.app/" class="btn-hub">HUB</a>
+    </header>
 
     <div id="game-container">
         <div id="start-screen" class="overlay">
@@ -73,7 +82,7 @@
                 <button class="btn-diff btn-easy" onclick="startGame('EASY')">EASY</button>
                 <button class="btn-diff btn-hard" onclick="startGame('HARD')">HARD</button>
             </div>
-            <p style="font-size: 12px; color: #666; margin-top:10px;">모바일/PC 통합 랭킹 시스템 지원</p>
+            <p style="font-size: 12px; color: #888; margin-top:15px;">※ BGM은 첫 화면 클릭 시 재생됩니다.</p>
         </div>
 
         <div id="result-screen" class="overlay" style="display:none;">
@@ -88,15 +97,12 @@
         </div>
 
         <div id="status-ui">
-            <div id="level-up-msg">LEVEL UP!</div>
             <div id="ui-diff-label">EASY</div>
             <div style="color:var(--danger)">HP: <span id="hp-val">15</span></div>
             <div id="ui-timer" style="color: var(--point);">0.0s</div>
         </div>
         
         <canvas id="gameCanvas" width="400" height="400"></canvas>
-
-        <div class="ad-slot">광고 슬롯 - 게임 화면 하단</div>
 
         <div id="mobile-controls">
             <div class="d-pad">
@@ -109,8 +115,8 @@
 
         <div id="ranking-board">
             <div class="rank-tabs">
-                <button class="rank-tab-btn active" id="tab-easy" onclick="switchRankTab('EASY')">EASY 리더보드</button>
-                <button class="rank-tab-btn" id="tab-hard" onclick="switchRankTab('HARD')">HARD 리더보드</button>
+                <button class="rank-tab-btn active" id="tab-easy" onclick="switchRankTab('EASY')">EASY 랭킹</button>
+                <button class="rank-tab-btn" id="tab-hard" onclick="switchRankTab('HARD')">HARD 랭킹</button>
             </div>
             <table class="rank-table">
                 <tbody id="rank-list"></tbody>
@@ -120,38 +126,32 @@
 
     <section id="seo-section">
         <div class="seo-content-box">
-            <h2>패턴 피하기(Pattern Avoidance) 정식 가이드</h2>
-            <p>본 게임은 정교한 알고리즘을 통해 생성되는 다양한 탄막 패턴을 회피하며 생존 시간을 기록하는 <b>극한의 회피 액션 게임</b>입니다. 현대적인 웹 브라우저 환경에서 별도의 설치 없이 즐길 수 있도록 최적화되었으며, 모바일 사용자를 위한 전용 터치 컨트롤러를 탑재하여 언제 어디서든 기록 경쟁이 가능합니다.</p>
-            
-            <h3>1. 게임 모드 상세 설명</h3>
-            <p><b>EASY 모드:</b> 총 15의 넉넉한 체력(HP)을 제공합니다. 패턴 생성 속도가 초기에 완만하며, 30초와 60초 구간을 지나며 점진적으로 난이도가 상승합니다. 게임에 익숙해지고 싶은 초보 플레이어에게 권장합니다.</p>
-            <p><b>HARD 모드:</b> 진정한 도전자들을 위한 모드입니다. 단 3의 체력만 주어지며, 초반부터 <b>'중력 왜곡'</b>이라는 특수 패턴이 등장합니다. 중력구는 플레이어를 중앙으로 끌어당기거나 밀어내어 평범한 회피를 어렵게 만듭니다.</p>
+            <h2>웹 브라우저 탄막 피하기 게임의 정석</h2>
+            <p>패턴 어보이던스(Pattern Avoidance)는 순수하게 사용자의 반응 속도와 판단력을 시험하는 <b>무료 웹 게임</b>입니다. 복잡한 설치 과정 없이 HTML5 기반으로 구동되며, 특히 모바일과 PC 환경 모두에서 최적화된 플레이 경험을 제공하기 위해 설계되었습니다. 이지 모드와 하드 모드를 통해 자신의 한계를 시험해보세요.</p>
+            <h3>핵심 게임 메커니즘</h3>
+            <p>게임은 시간이 지날수록 레이저, 유도탄, 방사형 탄막의 밀도가 기하급수적으로 높아집니다. 특히 하드 모드에서 구현된 <b>중력 시스템</b>은 플레이어의 이동 속도에 직접적인 변화를 주어, 일반적인 회피 게임과는 차별화된 고난도 경험을 선사합니다.</p>
         </div>
-
-        <div class="ad-slot">광고 슬롯 - 콘텐츠 중간</div>
-
         <div class="seo-content-box">
-            <h2>주요 업데이트 내역 (v1.1.26)</h2>
-            <p>이번 버전에서는 사용자 경험을 개선하기 위해 다음과 같은 사항이 반영되었습니다.</p>
+            <h2>전 세계 플레이어와 경쟁하는 리더보드</h2>
+            <p>파이어베이스(Firebase) 기반의 실시간 랭킹 시스템을 통해 전 세계 플레이어들과 기록을 공유하세요. 이지 모드와 하드 모드의 리더보드가 분리되어 있어, 각 모드별 정점에 도전할 수 있습니다. 이름만 입력하면 즉시 자신의 기록을 데이터베이스에 저장하고 확인이 가능합니다.</p>
+            <h3>업데이트 v1.1.27 변경점</h3>
             <ul>
-                <li><b>난이도별 랭킹 분리:</b> 이제 EASY와 HARD 모드의 기록이 개별적으로 관리되어 보다 공정한 경쟁이 가능합니다.</li>
-                <li><b>중앙 집중형 컨트롤러:</b> 모바일 기기 하단 중앙에 방향키를 배치하여 조작 시 화면 가림을 최소화했습니다.</li>
-                <li><b>고착 버그 수정:</b> 특정 방향으로 계속 움직이는 입력 오류를 전면 수정하여 신뢰도 높은 조작감을 확보했습니다.</li>
-                <li><b>성능 최적화:</b> 대량의 탄막이 생성되는 60초 이후 구간에서도 프레임 드랍 없는 쾌적한 환경을 제공합니다.</li>
+                <li>실시간 랭킹 로딩 로직 안정화: 이제 순위가 즉각적으로 표시됩니다.</li>
+                <li>배경음악(BGM) 추가: 몰입감을 높여주는 사운드트랙과 볼륨 조절 기능이 포함되었습니다.</li>
+                <li>광고 슬롯 최적화: 최상단 배치로 가독성을 확보했습니다.</li>
             </ul>
-            
-            <h3>2. 고득점을 위한 팁</h3>
-            <p>화면 중앙에만 머무르기보다는 레이저의 예고선(노란 점선)을 미리 읽고 외곽으로 무빙하는 것이 유리합니다. 특히 유도탄(Homing)이 생성될 때는 한쪽 방향으로 지속적으로 움직여 궤적을 유도하는 전략이 필요합니다.</p>
         </div>
-
-        <div class="ad-slot">광고 슬롯 - 하단 푸터</div>
     </section>
 
-    <div id="version-tag">v1.1.26</div>
+    <audio id="gameBgm" loop preload="auto">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="version-tag">v1.1.27</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, query, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCWvmTD7ZqrM8QS2jAtIoxyYw9zDghyyZo",
@@ -166,6 +166,8 @@
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
+        const bgm = document.getElementById('gameBgm');
+        const volSlider = document.getElementById('volume-slider');
 
         let gameState = 'WAIT', diffMode = 'EASY', animationId = null;
         let player = { x: 200, y: 200, r: 6, hp: 15, speed: 2.3, invul: 0 };
@@ -173,27 +175,38 @@
         let spawnTimers = [], lastUpdate = 0;
         let currentRankTab = 'EASY';
 
+        // BGM 로직
+        volSlider.oninput = (e) => { bgm.volume = e.target.value; };
+        document.body.addEventListener('click', () => { if(bgm.paused) bgm.play(); }, { once: true });
+
         window.handleTouch = (code, isPressed) => {
             if(!isPressed) delete keys[code];
             else keys[code] = true;
         };
 
-        // 랭킹 불러오기 로직 (안전성 강화)
-        let unsubscribe = null;
-        function loadRankings(mode) {
-            if (unsubscribe) unsubscribe();
-            const q = query(collection(db, "avoidance_rankings"), where("difficulty", "==", mode), orderBy("score", "desc"), limit(10));
-            unsubscribe = onSnapshot(q, (snapshot) => {
-                const list = document.getElementById('rank-list');
+        // 랭킹 시스템 (안전한 클라이언트 측 정렬 방식 채택)
+        async function loadRankings(mode) {
+            const list = document.getElementById('rank-list');
+            list.innerHTML = "<tr><td colspan='3' style='padding:20px; color:#555;'>데이터 불러오는 중...</td></tr>";
+            
+            try {
+                const q = query(collection(db, "avoidance_rankings"), where("difficulty", "==", mode));
+                const querySnapshot = await getDocs(q);
+                let ranks = [];
+                querySnapshot.forEach((doc) => ranks.push(doc.data()));
+                
+                // 점수 기준 정렬
+                ranks.sort((a, b) => b.score - a.score);
+                
                 list.innerHTML = "";
-                let rank = 1;
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    list.innerHTML += `<tr><td style="width:50px">${rank}위</td><td style="text-align:left; font-weight:600">${data.name||'익명'}</td><td style="color:var(--point); text-align:right">${(parseFloat(data.score)||0).toFixed(1)}s</td></tr>`;
-                    rank++;
+                ranks.slice(0, 10).forEach((data, i) => {
+                    list.innerHTML += `<tr><td style="width:50px">${i+1}위</td><td style="text-align:left; font-weight:600">${data.name||'익명'}</td><td style="color:var(--point); text-align:right">${(parseFloat(data.score)||0).toFixed(1)}s</td></tr>`;
                 });
-                if(rank === 1) list.innerHTML = "<tr><td colspan='3' style='padding:20px; color:#555;'>데이터 로딩 중 또는 기록 없음</td></tr>";
-            }, (error) => { console.error(error); });
+                if(ranks.length === 0) list.innerHTML = "<tr><td colspan='3' style='padding:20px; color:#555;'>기록이 없습니다.</td></tr>";
+            } catch (e) { 
+                console.error(e);
+                list.innerHTML = "<tr><td colspan='3' style='padding:20px; color:red;'>로드 오류</td></tr>";
+            }
         }
 
         window.switchRankTab = (mode) => {
@@ -202,9 +215,9 @@
             document.getElementById('tab-hard').className = mode === 'HARD' ? 'rank-tab-btn active' : 'rank-tab-btn';
             loadRankings(mode);
         }
-        switchRankTab('EASY'); // 초기 실행
+        switchRankTab('EASY');
 
-        window.addEventListener('keydown', (e) => { keys[e.code] = true; if(e.code === 'Escape') endGame(); });
+        window.addEventListener('keydown', (e) => { keys[e.code] = true; });
         window.addEventListener('keyup', (e) => { delete keys[e.code]; });
 
         window.startGame = (mode) => {
@@ -216,6 +229,7 @@
             document.getElementById('start-screen').style.display = 'none';
             document.getElementById('status-ui').style.display = 'flex';
             canvas.style.display = 'block';
+            if(bgm.paused) bgm.play();
             startReady();
         }
 
@@ -386,6 +400,7 @@
                 await addDoc(collection(db, "avoidance_rankings"), { name, score: Number(survivedTime), difficulty: diffMode, createdAt: serverTimestamp() });
                 document.getElementById('save-form').innerHTML = "<b style='color:#2ecc71;'>등록 완료!</b>";
                 document.getElementById('retry-btn').style.display = 'block';
+                loadRankings(diffMode);
             } catch (e) { alert("저장 실패"); btn.disabled = false; }
         }
     </script>
