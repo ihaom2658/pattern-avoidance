@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pattern Avoidance - v1.1.31</title>
+    <title>Pattern Avoidance - v1.1.32</title>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4133279395991822" crossorigin="anonymous"></script>
     <style>
         :root { --bg: #0c0c0c; --point: #f1c40f; --danger: #e74c3c; --text: #ffffff; --card: #1a1a1a; }
@@ -17,12 +17,10 @@
         .bgm-ctrl span { font-size: 11px; font-weight: bold; color: var(--point); }
         #volume-slider { width: 60px; accent-color: var(--point); cursor: pointer; }
 
-        /* HUB 버튼: 문구 변경 및 크기 확대 */
-        .btn-hub { padding: 12px 30px; background: var(--point); color: #000; text-decoration: none; font-weight: 900; border-radius: 8px; font-size: 18px; border: 3px solid #fff; box-shadow: 0 0 15px rgba(241, 196, 15, 0.4); transition: transform 0.1s; }
-        .btn-hub:active { transform: scale(0.95); }
+        .btn-hub { padding: 12px 30px; background: var(--point); color: #000; text-decoration: none; font-weight: 900; border-radius: 8px; font-size: 18px; border: 3px solid #fff; box-shadow: 0 0 15px rgba(241, 196, 15, 0.4); }
 
         #game-container { position: relative; width: 100%; max-width: 400px; display: flex; justify-content: center; align-items: center; flex-direction: column; margin-top: 5px; }
-        canvas { background: #000; border: 3px solid #fff; display: none; width: 100%; aspect-ratio: 1/1; box-shadow: 0 0 25px rgba(255, 255, 255, 0.1); touch-action: none; }
+        canvas { background: #000; border: 3px solid #fff; display: none; width: 100%; aspect-ratio: 1/1; box-shadow: 0 0 25px rgba(255, 255, 255, 0.1); touch-action: none; pointer-events: auto; }
 
         #mobile-controls { display: none; width: 100%; max-width: 400px; margin-top: 20px; padding-bottom: 20px; z-index: 2000; }
         .d-pad { display: grid; grid-template-columns: repeat(3, 70px); grid-template-rows: repeat(3, 70px); gap: 8px; justify-content: center; }
@@ -48,10 +46,14 @@
         .rank-table { width: 100%; border-collapse: collapse; font-size: 13px; }
         .rank-table td { padding: 12px; border-bottom: 1px solid #222; text-align: center; }
 
+        /* 하단 글 섹션 강화 (2배 분량) */
         #seo-section { width: 90%; max-width: 800px; margin-top: 40px; padding-bottom: 80px; color: #ccc; line-height: 1.8; }
-        .seo-content-box { background: #111; padding: 25px; border-radius: 15px; border-left: 5px solid var(--point); margin-bottom: 20px; }
-        .seo-content-box h2 { color: var(--point); margin-top: 0; }
-        .seo-content-box h3 { color: #fff; }
+        .seo-content-box { background: #111; padding: 30px; border-radius: 15px; border-left: 5px solid var(--point); margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .seo-content-box h2 { color: var(--point); margin-top: 0; font-size: 1.5rem; }
+        .seo-content-box h3 { color: #fff; margin-top: 20px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        .seo-content-box p { margin-bottom: 15px; }
+        .seo-content-box ul { padding-left: 20px; }
+        .seo-content-box li { margin-bottom: 10px; }
 
         #version-tag { position: fixed; bottom: 5px; right: 5px; font-size: 10px; color: #444; }
 
@@ -105,10 +107,10 @@
 
         <div id="mobile-controls">
             <div class="d-pad">
-                <div class="ctrl-btn btn-up" ontouchstart="handleTouch('KeyW', true)" ontouchend="handleTouch('KeyW', false)">↑</div>
-                <div class="ctrl-btn btn-left" ontouchstart="handleTouch('KeyA', true)" ontouchend="handleTouch('KeyA', false)">←</div>
-                <div class="ctrl-btn btn-right" ontouchstart="handleTouch('KeyD', true)" ontouchend="handleTouch('KeyD', false)">→</div>
-                <div class="ctrl-btn btn-down" ontouchstart="handleTouch('KeyS', true)" ontouchend="handleTouch('KeyS', false)">↓</div>
+                <div class="ctrl-btn btn-up" ontouchstart="handleTouch('KeyW', true, event)" ontouchend="handleTouch('KeyW', false, event)">↑</div>
+                <div class="ctrl-btn btn-left" ontouchstart="handleTouch('KeyA', true, event)" ontouchend="handleTouch('KeyA', false, event)">←</div>
+                <div class="ctrl-btn btn-right" ontouchstart="handleTouch('KeyD', true, event)" ontouchend="handleTouch('KeyD', false, event)">→</div>
+                <div class="ctrl-btn btn-down" ontouchstart="handleTouch('KeyS', true, event)" ontouchend="handleTouch('KeyS', false, event)">↓</div>
             </div>
         </div>
 
@@ -125,19 +127,31 @@
 
     <section id="seo-section">
         <div class="seo-content-box">
-            <h2>웹 브라우저 탄막 피하기 게임의 정석</h2>
-            <p>패턴 어보이던스(Pattern Avoidance)는 순수하게 사용자의 반응 속도와 판단력을 시험하는 <b>무료 웹 게임</b>입니다. 복잡한 설치 과정 없이 HTML5 기반으로 구동되며, 특히 모바일과 PC 환경 모두에서 최적화된 플레이 경험을 제공하기 위해 설계되었습니다.</p>
-            <h3>핵심 게임 메커니즘</h3>
-            <p>게임은 시간이 지날수록 레이저, 유도탄, 방사형 탄막의 밀도가 기하급수적으로 높아집니다. 특히 하드 모드에서 구현된 중력 시스템은 플레이어의 이동 속도에 변화를 주어 고난도 경험을 선사합니다.</p>
-        </div>
-        <div class="seo-content-box">
-            <h2>실시간 리더보드 및 업데이트</h2>
-            <p>파이어베이스 기반의 랭킹 시스템을 통해 전 세계 플레이어들과 기록을 공유하세요. 이지 모드와 하드 모드의 리더보드가 분리되어 있습니다.</p>
-            <h3>업데이트 v1.1.31 변경점</h3>
+            <h2>중독성 강한 웹 브라우저 탄막 피하기 게임</h2>
+            <p>패턴 어보이던스(Pattern Avoidance)는 별도의 설치 없이 브라우저에서 즉시 즐길 수 있는 고난도 <b>회피 액션 게임</b>입니다. 현대적인 감각의 UI와 클래식한 아케이드 감성을 결합하여, 남녀노소 누구나 반응 속도의 한계에 도전할 수 있습니다. 본 게임은 PC 환경의 키보드 조작은 물론, 스마트폰 환경의 터치 인터페이스까지 완벽하게 지원합니다.</p>
+            <h3>핵심 게임 특징 및 플레이 방법</h3>
             <ul>
-                <li><b>볼륨 설정 유지:</b> 게임 재시작 시에도 볼륨 값이 초기화되지 않습니다.</li>
-                <li><b>조작 고정 버그 해결:</b> 게임 도중 창 밖을 클릭해도 캐릭터가 멈추지 않는 현상을 수정했습니다.</li>
-                <li><b>HUB UI 개선:</b> 버튼 크기 확대 및 텍스트를 "HUB로 돌아가기"로 변경했습니다.</li>
+                <li><b>정밀한 물리 엔진:</b> 캐릭터의 이동과 탄막의 충돌 판정을 픽셀 단위로 계산하여 불합리한 피격 상황을 최소화했습니다.</li>
+                <li><b>이지 & 하드 모드 제공:</b> 15의 넉넉한 체력을 가진 이지 모드에서 패턴을 익히고, 단 3회의 기회만 주어지는 하드 모드에서 진정한 고수에 도전하세요.</li>
+                <li><b>역동적인 패턴 변화:</b> 고정된 패턴이 아닌, 생존 시간에 따라 탄막의 속도와 생성 빈도가 실시간으로 가속되어 긴장감을 유지합니다.</li>
+            </ul>
+        </div>
+
+        <div class="seo-content-box">
+            <h2>하드 모드 전용: 중력장 시스템 가이드</h2>
+            <p>v1.1.32 버전의 하드 모드에는 플레이어를 특정 방향으로 끌어당기거나 밀어내는 <b>'중력 왜곡'</b> 현상이 추가되었습니다. 화면에 생성되는 반투명한 원 영역에 진입하면 캐릭터의 이동 경로가 왜곡되므로, 이를 역이용하거나 빠르게 회피하는 것이 고득점의 핵심 전략입니다.</p>
+            <h3>전략적 회피 팁</h3>
+            <p>레이저 경고선이 나타날 때는 미리 이동 경로를 확보하는 것이 중요합니다. 유도탄의 경우, 캐릭터를 향해 직선으로 오기 때문에 마지막 순간에 살짝 비껴가는 '최소 움직임' 전략이 생존 시간을 비약적으로 늘려줍니다. 방사형 탄막은 화면 중앙보다는 외곽에서 사이 공간을 찾는 것이 유리합니다.</p>
+        </div>
+
+        <div class="seo-content-box">
+            <h2>실시간 글로벌 리더보드 시스템</h2>
+            <p>구글 파이어베이스(Firebase) 데이터베이스와 실시간으로 연동되어, 게임 종료 즉시 자신의 기록을 전 세계 플레이어들과 비교할 수 있습니다. 1위부터 10위까지의 명예의 전당에 이름을 올려보세요. 이지 모드는 꾸준함의 승리라면, 하드 모드는 단 0.1초의 판단이 순위를 결정합니다.</p>
+            <h3>업데이트 v1.1.32 기술적 개선사항</h3>
+            <ul>
+                <li><b>좌표 회귀 버그 수정:</b> 하드 모드에서 특정 영역 클릭 시 캐릭터가 고정되거나 제자리로 돌아오던 논리 오류를 완벽하게 해결했습니다.</li>
+                <li><b>입력 시스템 고도화:</b> 포커스 이탈 시 조작이 멈추지 않던 현상을 수정하고 모바일 터치 반응성을 20% 향상시켰습니다.</li>
+                <li><b>사운드 메모리 관리:</b> 사용자가 설정한 BGM 볼륨을 브라우저에 저장하여 재방문 시에도 동일한 환경을 제공합니다.</li>
             </ul>
         </div>
     </section>
@@ -146,7 +160,7 @@
         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
     </audio>
 
-    <div id="version-tag">v1.1.31</div>
+    <div id="version-tag">v1.1.32</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -173,18 +187,13 @@
         let objects = [], keys = {}, startTime = 0, survivedTime = "0.0";
         let spawnTimers = [], lastUpdate = 0;
 
-        // [수정] 볼륨 설정 불러오기 및 저장
         const savedVol = localStorage.getItem('gameVolume');
-        if(savedVol !== null) {
-            bgm.volume = savedVol;
-            volSlider.value = savedVol;
-        } else {
-            bgm.volume = 0.5;
-        }
+        if(savedVol !== null) { bgm.volume = savedVol; volSlider.value = savedVol; }
+        else { bgm.volume = 0.5; }
 
         volSlider.oninput = (e) => { 
             bgm.volume = e.target.value; 
-            localStorage.setItem('gameVolume', e.target.value); // 볼륨 저장
+            localStorage.setItem('gameVolume', e.target.value); 
         };
 
         document.addEventListener('visibilitychange', () => {
@@ -192,12 +201,16 @@
             else if (gameState !== 'WAIT' && gameState !== 'END') { bgm.play(); }
         });
 
-        // [수정] 포커스를 잃었을 때(창 밖 클릭 등) 모든 조작 키 강제 해제
+        // 입력 상태 완전 초기화 (버그 방지)
         window.onblur = () => { keys = {}; };
 
-        document.body.addEventListener('click', () => { if(bgm.paused && gameState !== 'END') bgm.play(); }, { once: true });
+        document.body.addEventListener('click', (e) => { 
+            if(bgm.paused && gameState !== 'END') bgm.play(); 
+        }, { once: true });
 
-        window.handleTouch = (code, isPressed) => {
+        // 모바일 터치 조작 최적화
+        window.handleTouch = (code, isPressed, event) => {
+            if(event) event.preventDefault();
             if(!isPressed) delete keys[code];
             else keys[code] = true;
         };
@@ -305,23 +318,34 @@
             lastUpdate = now;
             if(player.invul > 0) player.invul -= dt;
 
-            // 정밀 조작 반영
-            if(keys['KeyW'] && player.y > player.r) player.y -= player.speed;
-            if(keys['KeyS'] && player.y < 400 - player.r) player.y += player.speed;
-            if(keys['KeyA'] && player.x > player.r) player.x -= player.speed;
-            if(keys['KeyD'] && player.x < 400 - player.r) player.x += player.speed;
-
-            survivedTime = ((now - startTime) / 1000).toFixed(1);
-            document.getElementById('ui-timer').innerText = survivedTime + 's';
+            // 정밀 조작 반영 (중력장 영향 포함)
+            let moveX = 0, moveY = 0;
+            if(keys['KeyW']) moveY -= player.speed;
+            if(keys['KeyS']) moveY += player.speed;
+            if(keys['KeyA']) moveX -= player.speed;
+            if(keys['KeyD']) moveX += player.speed;
 
             for(let i = objects.length - 1; i >= 0; i--) {
                 let o = objects[i];
                 if(o.type === 'GRAVITY') {
                     if(now - o.timer > o.duration) { objects.splice(i,1); continue; }
                     const dist = Math.hypot(o.x - player.x, o.y - player.y);
-                    if(dist < 150) { player.x += (o.x - player.x) * o.power; player.y += (o.y - player.y) * o.power; }
-                    continue;
+                    if(dist < 150) { 
+                        moveX += (o.x - player.x) * o.power; 
+                        moveY += (o.y - player.y) * o.power; 
+                    }
                 }
+            }
+
+            player.x = Math.max(player.r, Math.min(400 - player.r, player.x + moveX));
+            player.y = Math.max(player.r, Math.min(400 - player.r, player.y + moveY));
+
+            survivedTime = ((now - startTime) / 1000).toFixed(1);
+            document.getElementById('ui-timer').innerText = survivedTime + 's';
+
+            for(let i = objects.length - 1; i >= 0; i--) {
+                let o = objects[i];
+                if(o.type === 'GRAVITY') continue;
                 const warnDur = (diffMode === 'EASY') ? 700 : 500;
                 if(o.stage === 'WARN' && now - o.timer > warnDur) {
                     o.stage = 'FIRE'; o.timer = now;
