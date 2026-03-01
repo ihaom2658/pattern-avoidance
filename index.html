@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pattern Avoidance - v1.1.49</title>
+    <title>Pattern Avoidance - v1.1.51</title>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4133279395991822" crossorigin="anonymous"></script>
     <style>
         :root { --bg: #0c0c0c; --point: #f1c40f; --danger: #e74c3c; --text: #ffffff; --card: #1a1a1a; }
@@ -42,7 +42,6 @@
         #version-tag { position: fixed; bottom: 5px; right: 5px; font-size: 10px; color: #444; }
         @media (max-width: 600px) { #mobile-controls { display: block; } }
     </style>
-    <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
     <div class="ad-slot-top"><span style="color:#444; font-size:11px;">ADVERTISEMENT</span></div>
@@ -102,21 +101,15 @@
         <div class="seo-content-box">
             <h2>중독성 강한 웹 브라우저 탄막 피하기 게임</h2>
             <p>패턴 어보이던스(Pattern Avoidance)는 별도의 설치 없이 브라우저에서 즉시 즐길 수 있는 고난도 <b>회피 액션 게임</b>입니다. 현대적인 감각의 UI와 클래식한 아케이드 감성을 결합하여, 남녀노소 누구나 반응 속도의 한계에 도전할 수 있습니다. 본 게임은 PC 환경의 키보드 조작은 물론, 스마트폰 환경의 터치 인터페이스까지 완벽하게 지원합니다.</p>
-            <h3>핵심 게임 특징 및 플레이 방법</h3>
-            <ul>
-                <li><b>정밀한 물리 엔진:</b> 캐릭터의 이동과 탄막의 충돌 판정을 픽셀 단위로 계산하여 불합리한 피격 상황을 최소화했습니다.</li>
-                <li><b>이지 & 하드 모드 제공:</b> 5의 체력을 가진 이지 모드에서 패턴을 익히고, 단 3회의 기회만 주어지는 하드 모드에서 진정한 고수에 도전하세요.</li>
-                <li><b>역동적인 패턴 변화:</b> 고정된 패턴이 아닌, 생존 시간에 따라 탄막의 속도와 생성 빈도가 실시간으로 가속되어 긴장감을 유지합니다.</li>
-            </ul>
         </div>
         <div class="seo-content-box">
             <h2>하드 모드 전용: 복합 중력장 시스템 가이드</h2>
-            <p>하드 모드에는 혁신적인 <b>'이중 중력'</b> 시스템이 적용되었습니다. 중력장 원의 바깥쪽에서는 중심부로 서서히 끌려가는 힘이 작용하며, 원의 안쪽으로 진입하면 반대로 밀어내는 힘이 작용합니다. 이 독특한 물리 법칙은 플레이어로 하여금 끊임없이 위치를 수정하게 만들며, 고도의 집중력을 요구합니다.</p>
+            <p>하드 모드에는 혁신적인 <b>'이중 중력'</b> 시스템이 적용되었습니다. 원 밖에서는 중심부로 끌려가며 원 안에서는 밀어내는 힘이 작용하여 고도의 집중력을 요구합니다.</p>
         </div>
     </section>
 
     <audio id="gameBgm" loop preload="auto"><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg"></audio>
-    <div id="version-tag">v1.1.49</div>
+    <div id="version-tag">v1.1.51</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -138,25 +131,30 @@
         
         window.handleTouch = (code, isPressed, event) => { if(event) event.preventDefault(); if(!isPressed) delete keys[code]; else keys[code] = true; };
 
-        // 랭킹 로직 (로딩 버그 해결 버전)
+        // 랭킹 로직: 가장 원본에 가까운 안정적인 방식으로 복구
         async function loadRankings(mode) {
             const list = document.getElementById('rank-list'); list.innerHTML = "<tr><td colspan='3'>로딩 중...</td></tr>";
             try {
+                // 특정 난이도 데이터만 호출
                 const q = query(collection(db, "avoidance_rankings"), where("difficulty", "==", mode));
                 const snap = await getDocs(q); 
                 let ranks = [];
-                const resetTime = new Date("2026-03-02T00:00:00Z").getTime();
-                snap.forEach((doc) => {
-                    const data = doc.data();
-                    if(mode === 'EASY') {
-                        if(data.createdAt && data.createdAt.toMillis() >= resetTime) ranks.push(data);
-                    } else { ranks.push(data); }
-                });
-                ranks.sort((a, b) => b.score - a.score); list.innerHTML = "";
-                ranks.slice(0, 5).forEach((data, i) => { 
-                    list.innerHTML += `<tr><td style="width:50px">${i+1}위</td><td style="text-align:left;">${data.name||'익명'}</td><td style="color:var(--point); text-align:right">${(parseFloat(data.score)||0).toFixed(1)}s</td></tr>`; 
-                });
-            } catch (e) { list.innerHTML = "<tr><td colspan='3'>데이터 로드 실패</td></tr>"; }
+                snap.forEach((doc) => ranks.push(doc.data()));
+                
+                // 점수 내림차순 정렬
+                ranks.sort((a, b) => (Number(b.score) || 0) - (Number(a.score) || 0));
+                list.innerHTML = "";
+                
+                // 상위 5개만 표시
+                const display = ranks.slice(0, 5);
+                if(display.length === 0) {
+                    list.innerHTML = "<tr><td colspan='3'>기록이 없습니다.</td></tr>";
+                } else {
+                    display.forEach((data, i) => { 
+                        list.innerHTML += `<tr><td style="width:50px">${i+1}위</td><td style="text-align:left;">${data.name||'익명'}</td><td style="color:var(--point); text-align:right">${(parseFloat(data.score)||0).toFixed(1)}s</td></tr>`; 
+                    });
+                }
+            } catch (e) { list.innerHTML = "<tr><td colspan='3'>불러오기 실패</td></tr>"; }
         }
 
         window.switchRankTab = (mode) => {
@@ -186,7 +184,7 @@
             }, 800);
         }
 
-        // 가속도 완화 계수 적용
+        // 가속도 완화 계수 (t * 5, t * 6)
         function spawnLaserLoop() { if(gameState !== 'PLAY') return; const t = parseFloat(survivedTime); if(t > 40 && Math.random() < 0.3) spawnX(); else if(t > 20 && Math.random() < 0.5) spawnCross(); else spawnLaser(); let base = (diffMode === 'EASY') ? 1000 : 650; spawnTimers.push(setTimeout(spawnLaserLoop, Math.max(250, base - (t * 5)))); }
         function spawnHomingLoop() { if(gameState !== 'PLAY') return; const t = parseFloat(survivedTime); if(t > 45 && Math.random() < 0.4) spawnRadial(); else spawnHoming(); let base = (diffMode === 'EASY') ? 1500 : 900; spawnTimers.push(setTimeout(spawnHomingLoop, Math.max(450, base - (t * 6)))); }
         function spawnHardSpecialLoop() { if(gameState !== 'PLAY') return; objects.push({ type: 'GRAVITY', x: Math.random()*300+50, y: Math.random()*300+50, timer: Date.now(), duration: 6000 }); spawnTimers.push(setTimeout(spawnHardSpecialLoop, 15000)); }
