@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pattern Avoidance - v1.1.34</title>
+    <title>Pattern Avoidance - v1.1.46</title>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4133279395991822" crossorigin="anonymous"></script>
     <style>
         :root { --bg: #0c0c0c; --point: #f1c40f; --danger: #e74c3c; --text: #ffffff; --card: #1a1a1a; }
@@ -32,6 +32,8 @@
         #status-ui { width: 95%; display: none; justify-content: space-between; font-size: 14px; font-weight: bold; margin-bottom: 8px; }
         #ranking-board { width: 95%; background: var(--card); border-radius: 15px; margin-top: 20px; border: 1px solid #333; overflow: hidden; }
         .rank-tabs { display: flex; background: #222; }
+        .rank-tab-btn { flex:1; padding:12px; border:none; background:none; color:#888; font-weight:bold; cursor:pointer; }
+        .rank-tab-btn.active { background:var(--card); color:var(--point); border-bottom:2px solid var(--point); }
         .rank-table { width: 100%; border-collapse: collapse; font-size: 13px; }
         .rank-table td { padding: 12px; border-bottom: 1px solid #222; text-align: center; }
         #seo-section { width: 90%; max-width: 800px; margin-top: 40px; padding-bottom: 80px; color: #ccc; line-height: 1.8; }
@@ -41,7 +43,7 @@
         @media (max-width: 600px) { #mobile-controls { display: block; } }
     </style>
     <script defer src="/_vercel/insights/script.js"></script>
-    </head>
+</head>
 <body>
     <div class="ad-slot-top"><span style="color:#444; font-size:11px;">ADVERTISEMENT</span></div>
     <header>
@@ -75,7 +77,7 @@
         </div>
         <div id="status-ui">
             <div id="ui-diff-label">EASY</div>
-            <div style="color:var(--danger)">HP: <span id="hp-val">15</span></div>
+            <div style="color:var(--danger)">HP: <span id="hp-val">5</span></div>
             <div id="ui-timer" style="color: var(--point);">0.0s</div>
         </div>
         <canvas id="gameCanvas" width="400" height="400"></canvas>
@@ -99,75 +101,70 @@
     <section id="seo-section">
         <div class="seo-content-box">
             <h2>중독성 강한 웹 브라우저 탄막 피하기 게임</h2>
-            <p>패턴 어보이던스(Pattern Avoidance)는 별도의 설치 없이 브라우저에서 즉시 즐길 수 있는 고난도 <b>회피 액션 게임</b>입니다. 현대적인 감각의 UI와 클래식한 아케이드 감성을 결합하여, 남녀노소 누구나 반응 속도의 한계에 도전할 수 있습니다. 본 게임은 PC 환경의 키보드 조작은 물론, 스마트폰 환경의 터치 인터페이스까지 완벽하게 지원합니다.</p>
-            <h3>핵심 게임 특징 및 플레이 방법</h3>
-            <ul>
-                <li><b>정밀한 물리 엔진:</b> 캐릭터의 이동과 탄막의 충돌 판정을 픽셀 단위로 계산하여 불합리한 피격 상황을 최소화했습니다.</li>
-                <li><b>이지 & 하드 모드 제공:</b> 15의 넉넉한 체력을 가진 이지 모드에서 패턴을 익히고, 단 3회의 기회만 주어지는 하드 모드에서 진정한 고수에 도전하세요.</li>
-                <li><b>역동적인 패턴 변화:</b> 고정된 패턴이 아닌, 생존 시간에 따라 탄막의 속도와 생성 빈도가 실시간으로 가속되어 긴장감을 유지합니다.</li>
-            </ul>
+            <p>패턴 어보이던스(Pattern Avoidance)는 별도의 설치 없이 브라우저에서 즉시 즐길 수 있는 고난도 <b>회피 액션 게임</b>입니다. 본 게임은 PC 환경의 키보드 조작은 물론, 스마트폰 환경의 터치 인터페이스까지 완벽하게 지원합니다.</p>
         </div>
         <div class="seo-content-box">
             <h2>하드 모드 전용: 복합 중력장 시스템 가이드</h2>
-            <p>v1.1.34 버전의 하드 모드에는 혁신적인 <b>'이중 중력'</b> 시스템이 적용되었습니다. 중력장 원의 바깥쪽에서는 중심부로 서서히 끌려가는 힘이 작용하며, 원의 안쪽으로 진입하면 반대로 밀어내는 힘이 작용합니다. 이 독특한 물리 법칙은 플레이어로 하여금 끊임없이 위치를 수정하게 만들며, 고도의 집중력을 요구합니다.</p>
-            <h3>전략적 회피 팁</h3>
-            <p>중력장의 안과 밖 경계에서 힘의 균형을 이용해 보세요. 밀어내는 힘을 뚫고 안으로 들어가면 오히려 탄막으로부터 안전한 공간을 확보할 수도 있습니다. 유도탄과 레이저가 동시에 쏟아질 때 중력의 방향을 읽는 것이 승패를 가릅니다.</p>
-        </div>
-        <div class="seo-content-box">
-            <h2>실시간 글로벌 리더보드 시스템</h2>
-            <p>구글 파이어베이스(Firebase) 데이터베이스와 실시간으로 연동되어, 게임 종료 즉시 자신의 기록을 전 세계 플레이어들과 비교할 수 있습니다. 1위부터 10위까지의 명예의 전당에 이름을 올려보세요.</p>
-            <h3>업데이트 v1.1.34 기술적 개선사항</h3>
-            <ul>
-                <li><b>복합 중력 로직:</b> 원 밖에서는 당기고 원 안에서는 밀어내는 정교한 중력 시스템을 구현했습니다.</li>
-                <li><b>조작 밸런스:</b> 중력의 세기를 조절하여 사용자가 의도적으로 영역 안으로 진입할 수 있도록 최적화했습니다.</li>
-                <li><b>버그 픽스:</b> 특정 환경에서 좌표가 고정되던 현상을 완전히 해결했습니다.</li>
-            </ul>
+            <p>하드 모드에는 혁신적인 <b>'이중 중력'</b> 시스템이 적용되었습니다. 원 밖에서는 중심부로 끌려가며 원 안에서는 밀어내는 힘이 작용하여 고도의 집중력을 요구합니다.</p>
         </div>
     </section>
 
     <audio id="gameBgm" loop preload="auto"><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg"></audio>
-    <div id="version-tag">v1.1.34</div>
+    <div id="version-tag">v1.1.46</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, query, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, query, serverTimestamp, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        
         const firebaseConfig = { apiKey: "AIzaSyCWvmTD7ZqrM8QS2jAtIoxyYw9zDghyyZo", authDomain: "dummy-server-ff1b9.firebaseapp.com", projectId: "dummy-server-ff1b9", storageBucket: "dummy-server-ff1b9.firebasestorage.app", messagingSenderId: "275700573811", appId: "1:275700573811:web:bb1290a5e5ec97a73cac06" };
         const app = initializeApp(firebaseConfig); const db = getFirestore(app);
         const canvas = document.getElementById('gameCanvas'); const ctx = canvas.getContext('2d');
         const bgm = document.getElementById('gameBgm'); const volSlider = document.getElementById('volume-slider');
+        
         let gameState = 'WAIT', diffMode = 'EASY', animationId = null;
-        let player = { x: 200, y: 200, r: 6, hp: 15, speed: 2.3, invul: 0 };
+        let player = { x: 200, y: 200, r: 6, hp: 5, speed: 2.3, invul: 0 };
         let objects = [], keys = {}, startTime = 0, survivedTime = "0.0";
         let spawnTimers = [], lastUpdate = 0;
 
         const savedVol = localStorage.getItem('gameVolume');
         if(savedVol !== null) { bgm.volume = savedVol; volSlider.value = savedVol; } else { bgm.volume = 0.5; }
         volSlider.oninput = (e) => { bgm.volume = e.target.value; localStorage.setItem('gameVolume', e.target.value); };
-        document.addEventListener('visibilitychange', () => { if (document.hidden) { bgm.pause(); } else if (gameState !== 'WAIT' && gameState !== 'END') { bgm.play(); } });
-        window.onblur = () => { keys = {}; };
-        document.body.addEventListener('click', () => { if(bgm.paused && gameState !== 'END') bgm.play(); }, { once: true });
+        
         window.handleTouch = (code, isPressed, event) => { if(event) event.preventDefault(); if(!isPressed) delete keys[code]; else keys[code] = true; };
 
+        // 3. 랭킹 5등까지 & 이지 랭킹 초기화 (날짜 필터)
         async function loadRankings(mode) {
             const list = document.getElementById('rank-list'); list.innerHTML = "<tr><td colspan='3'>로딩 중...</td></tr>";
             try {
-                const q = query(collection(db, "avoidance_rankings"), where("difficulty", "==", mode));
-                const snap = await getDocs(q); let ranks = []; snap.forEach((doc) => ranks.push(doc.data()));
+                let q;
+                if(mode === 'EASY') {
+                    const resetDate = new Date("2026-03-02T00:00:00Z"); // 초기화 시점
+                    q = query(collection(db, "avoidance_rankings"), where("difficulty", "==", "EASY"), where("createdAt", ">=", resetDate));
+                } else {
+                    q = query(collection(db, "avoidance_rankings"), where("difficulty", "==", "HARD"));
+                }
+                const snap = await getDocs(q); 
+                let ranks = []; snap.forEach((doc) => ranks.push(doc.data()));
                 ranks.sort((a, b) => b.score - a.score); list.innerHTML = "";
-                ranks.slice(0, 10).forEach((data, i) => { list.innerHTML += `<tr><td style="width:50px">${i+1}위</td><td style="text-align:left;">${data.name||'익명'}</td><td style="color:var(--point); text-align:right">${(parseFloat(data.score)||0).toFixed(1)}s</td></tr>`; });
-            } catch (e) {}
+                // 5명만 표시
+                ranks.slice(0, 5).forEach((data, i) => { 
+                    list.innerHTML += `<tr><td style="width:50px">${i+1}위</td><td style="text-align:left;">${data.name||'익명'}</td><td style="color:var(--point); text-align:right">${(parseFloat(data.score)||0).toFixed(1)}s</td></tr>`; 
+                });
+            } catch (e) { console.error(e); }
         }
+
         window.switchRankTab = (mode) => {
             document.getElementById('tab-easy').className = mode === 'EASY' ? 'rank-tab-btn active' : 'rank-tab-btn';
             document.getElementById('tab-hard').className = mode === 'HARD' ? 'rank-tab-btn active' : 'rank-tab-btn';
             loadRankings(mode);
         };
         switchRankTab('EASY');
+
         window.addEventListener('keydown', (e) => { keys[e.code] = true; if(e.code === 'Escape' && gameState === 'PLAY') endGame(); });
         window.addEventListener('keyup', (e) => { delete keys[e.code]; });
 
         window.startGame = (mode) => {
-            diffMode = mode; player.hp = (mode === 'EASY') ? 15 : 3; player.x = 200; player.y = 200; objects = []; 
+            diffMode = mode; player.hp = (mode === 'EASY') ? 5 : 3; player.x = 200; player.y = 200; objects = []; 
             document.getElementById('hp-val').innerText = player.hp; document.getElementById('ui-diff-label').innerText = mode;
             document.getElementById('start-screen').style.display = 'none'; document.getElementById('status-ui').style.display = 'flex';
             canvas.style.display = 'block'; bgm.play(); startReady();
@@ -183,8 +180,9 @@
             }, 800);
         }
 
-        function spawnLaserLoop() { if(gameState !== 'PLAY') return; const t = parseFloat(survivedTime); if(t > 40 && Math.random() < 0.3) spawnX(); else if(t > 20 && Math.random() < 0.5) spawnCross(); else spawnLaser(); let base = (diffMode === 'EASY') ? 1000 : 650; spawnTimers.push(setTimeout(spawnLaserLoop, Math.max(200, base - (t * 8)))); }
-        function spawnHomingLoop() { if(gameState !== 'PLAY') return; const t = parseFloat(survivedTime); if(t > 45 && Math.random() < 0.4) spawnRadial(); else spawnHoming(); let base = (diffMode === 'EASY') ? 1500 : 900; spawnTimers.push(setTimeout(spawnHomingLoop, Math.max(400, base - (t * 10)))); }
+        // 2. 가속도 완화 (t * 8 -> t * 5 등 하향)
+        function spawnLaserLoop() { if(gameState !== 'PLAY') return; const t = parseFloat(survivedTime); if(t > 40 && Math.random() < 0.3) spawnX(); else if(t > 20 && Math.random() < 0.5) spawnCross(); else spawnLaser(); let base = (diffMode === 'EASY') ? 1000 : 650; spawnTimers.push(setTimeout(spawnLaserLoop, Math.max(250, base - (t * 5)))); }
+        function spawnHomingLoop() { if(gameState !== 'PLAY') return; const t = parseFloat(survivedTime); if(t > 45 && Math.random() < 0.4) spawnRadial(); else spawnHoming(); let base = (diffMode === 'EASY') ? 1500 : 900; spawnTimers.push(setTimeout(spawnHomingLoop, Math.max(450, base - (t * 6)))); }
         function spawnHardSpecialLoop() { if(gameState !== 'PLAY') return; objects.push({ type: 'GRAVITY', x: Math.random()*300+50, y: Math.random()*300+50, timer: Date.now(), duration: 6000 }); spawnTimers.push(setTimeout(spawnHardSpecialLoop, 15000)); }
         function spawnLaser() { objects.push({ type: 'LASER', sub: Math.random()>0.5?'H':'V', pos: Math.random()*380+10, stage: 'WARN', timer: Date.now() }); }
         function spawnCross() { objects.push({ type: 'LASER', sub: 'H', pos: player.y, stage: 'WARN', timer: Date.now(), thick: 25 }); objects.push({ type: 'LASER', sub: 'V', pos: player.x, stage: 'WARN', timer: Date.now(), thick: 25 }); }
@@ -198,29 +196,20 @@
             let moveX = 0, moveY = 0;
             if(keys['KeyW']) moveY -= player.speed; if(keys['KeyS']) moveY += player.speed;
             if(keys['KeyA']) moveX -= player.speed; if(keys['KeyD']) moveX += player.speed;
-
             for(let i = objects.length - 1; i >= 0; i--) {
                 let o = objects[i];
                 if(o.type === 'GRAVITY') {
                     if(now - o.timer > o.duration) { objects.splice(i,1); continue; }
                     const dist = Math.hypot(o.x - player.x, o.y - player.y);
                     const angle = Math.atan2(o.y - player.y, o.x - player.x);
-                    
-                    if(dist > 100) { 
-                        moveX += Math.cos(angle) * 0.45;
-                        moveY += Math.sin(angle) * 0.45;
-                    } else {
-                        moveX -= Math.cos(angle) * 0.65;
-                        moveY -= Math.sin(angle) * 0.65;
-                    }
+                    if(dist > 100) { moveX += Math.cos(angle) * 0.45; moveY += Math.sin(angle) * 0.45; }
+                    else { moveX -= Math.cos(angle) * 0.65; moveY -= Math.sin(angle) * 0.65; }
                 }
             }
-
             player.x = Math.max(player.r, Math.min(400 - player.r, player.x + moveX));
             player.y = Math.max(player.r, Math.min(400 - player.r, player.y + moveY));
             survivedTime = ((now - startTime) / 1000).toFixed(1);
             document.getElementById('ui-timer').innerText = survivedTime + 's';
-
             for(let i = objects.length - 1; i >= 0; i--) {
                 let o = objects[i]; if(o.type === 'GRAVITY') continue;
                 const warnDur = (diffMode === 'EASY') ? 700 : 500;
@@ -259,14 +248,10 @@
                 ctx.beginPath();
                 if(o.type === 'GRAVITY') {
                     const pulse = (Math.sin(Date.now()/200) + 1) * 5;
-                    ctx.setLineDash([]);
-                    ctx.strokeStyle = "rgba(155, 89, 182, 0.6)"; 
-                    ctx.lineWidth = 3;
+                    ctx.setLineDash([]); ctx.strokeStyle = "rgba(155, 89, 182, 0.6)"; ctx.lineWidth = 3;
                     ctx.arc(o.x, o.y, 100, 0, Math.PI*2); ctx.stroke();
-                    ctx.beginPath();
-                    ctx.arc(o.x, o.y, 100 - pulse, 0, Math.PI*2);
-                    ctx.strokeStyle = "rgba(155, 89, 182, 0.2)";
-                    ctx.stroke();
+                    ctx.beginPath(); ctx.arc(o.x, o.y, 100 - pulse, 0, Math.PI*2);
+                    ctx.strokeStyle = "rgba(155, 89, 182, 0.2)"; ctx.stroke();
                 } else if(o.type === 'LASER') {
                     if(o.stage === 'WARN') { ctx.strokeStyle = "rgba(241,196,15,0.3)"; ctx.lineWidth = 2; ctx.setLineDash([5,5]); }
                     else { ctx.strokeStyle = "#fff"; ctx.lineWidth = o.thick || 15; ctx.setLineDash([]); }
