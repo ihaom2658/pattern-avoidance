@@ -1,389 +1,93 @@
-<!DOCTYPE html>
-<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>Multitasking Dodge - Neon Professional</title>
-    <style>
-        :root { 
-            --primary-color: #f1c40f; 
-            --neon-mint: #0ff;
-        }
-        body { margin: 0; background-color: #000; font-family: 'Pretendard', sans-serif; color: white; overflow: hidden; }
-        .overlay { width: 100%; min-height: 100vh; background: rgba(0,0,0,0.94); display: flex; flex-direction: column; align-items: center; padding-top: 40px; position: relative; z-index: 100; overflow-y: auto; }
-        .hidden { display: none !important; }
-        .btn { padding: 15px 40px; font-size: 20px; cursor: pointer; font-weight: bold; border: none; border-radius: 8px; transition: 0.2s; color: white; margin: 10px; outline: none; }
-        .btn:hover { transform: scale(1.05); filter: brightness(1.1); }
-        
-        #volume-control {
-            position: fixed; bottom: 45px; right: 20px; z-index: 1000;
-            background: rgba(255,255,255,0.1); padding: 12px; border-radius: 12px;
-            display: flex; align-items: center; gap: 10px; border: 1px solid rgba(255,255,255,0.2);
-            backdrop-filter: blur(5px);
-        }
-        #volume-slider { cursor: pointer; accent-color: var(--primary-color); width: 100px; }
-
-        #ranking-container { background: rgba(255,255,255,0.05); padding: 25px; border-radius: 15px; width: 420px; margin-top: 20px; border: 1px solid rgba(255,255,255,0.1); }
-        .tab-menu { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { background: #333; color: white; border: none; padding: 10px 22px; cursor: pointer; border-radius: 6px; font-size: 14px; }
-        .tab-btn.active { background: var(--primary-color); color: #000; font-weight: bold; }
-        table { width: 100%; border-collapse: collapse; text-align: center; }
-        th, td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-
-        #game-ui { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); font-size: 24px; z-index: 200; display: none; font-weight: bold; color: var(--neon-mint); text-align: center; width: 100%; }
-        #countdown-text { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 100px; font-weight: bold; color: var(--primary-color); z-index: 300; display: none; }
-        canvas { position: fixed; top: 0; left: 0; z-index: 10; display: none; cursor: none; }
-        #version-tag { position: fixed; bottom: 12px; right: 18px; font-size: 12px; color: rgba(255, 255, 255, 0.3); z-index: 500; }
-
-        .info-section { max-width: 600px; margin-top: 40px; padding: 20px; line-height: 1.6; color: #aaa; font-size: 14px; text-align: center; border-top: 1px solid #333; }
-        .info-section b { color: var(--primary-color); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pattern Avoidance - v1.1.49</title>
+    <title>Pattern Avoidance - v1.1.51</title>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4133279395991822" crossorigin="anonymous"></script>
+<style>
+:root { --bg: #0c0c0c; --point: #f1c40f; --danger: #e74c3c; --text: #ffffff; --card: #1a1a1a; }
+@@ -42,7 +42,6 @@
+#version-tag { position: fixed; bottom: 5px; right: 5px; font-size: 10px; color: #444; }
+@media (max-width: 600px) { #mobile-controls { display: block; } }
+</style>
+    <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
-
-<div id="countdown-text"></div>
-<div id="game-ui">TIME: <span id="timer">0.0</span>s | STAGE: <span id="stage-val">1</span></div>
-
-<div id="volume-control">
-    <span>🔊</span>
-    <input type="range" id="volume-slider" min="0" max="100" value="30">
+<div class="ad-slot-top"><span style="color:#444; font-size:11px;">ADVERTISEMENT</span></div>
+@@ -102,21 +101,15 @@ <h1 id="result-time" style="font-size: 3rem; color: var(--point); margin: 5px 0;
+<div class="seo-content-box">
+<h2>중독성 강한 웹 브라우저 탄막 피하기 게임</h2>
+<p>패턴 어보이던스(Pattern Avoidance)는 별도의 설치 없이 브라우저에서 즉시 즐길 수 있는 고난도 <b>회피 액션 게임</b>입니다. 현대적인 감각의 UI와 클래식한 아케이드 감성을 결합하여, 남녀노소 누구나 반응 속도의 한계에 도전할 수 있습니다. 본 게임은 PC 환경의 키보드 조작은 물론, 스마트폰 환경의 터치 인터페이스까지 완벽하게 지원합니다.</p>
+            <h3>핵심 게임 특징 및 플레이 방법</h3>
+            <ul>
+                <li><b>정밀한 물리 엔진:</b> 캐릭터의 이동과 탄막의 충돌 판정을 픽셀 단위로 계산하여 불합리한 피격 상황을 최소화했습니다.</li>
+                <li><b>이지 & 하드 모드 제공:</b> 5의 체력을 가진 이지 모드에서 패턴을 익히고, 단 3회의 기회만 주어지는 하드 모드에서 진정한 고수에 도전하세요.</li>
+                <li><b>역동적인 패턴 변화:</b> 고정된 패턴이 아닌, 생존 시간에 따라 탄막의 속도와 생성 빈도가 실시간으로 가속되어 긴장감을 유지합니다.</li>
+            </ul>
 </div>
-
-<div id="version-tag">Ver 1.1.4</div>
-<canvas id="gameCanvas"></canvas>
-
-<div id="main-menu" class="overlay">
-    <h1 style="color: var(--neon-mint); font-size: 48px; letter-spacing: 4px; margin-bottom: 10px; text-shadow: 0 0 15px var(--neon-mint);">NEON DODGE</h1>
-    <div class="btn-group">
-        <button class="btn" style="background:#2ecc71" onclick="runGame('EASY')">EASY MODE</button>
-        <button class="btn" style="background:#e74c3c" onclick="runGame('HARD')">HARD MODE</button>
-    </div>
-    
-    <div id="ranking-container">
-        <div class="tab-menu">
-            <button class="tab-btn active" id="tab-EASY" onclick="loadRanking('EASY')">EASY RANK</button>
-            <button class="tab-btn" id="tab-HARD" onclick="loadRanking('HARD')">HARD RANK</button>
-        </div>
-        <div id="ranking-list">데이터 로딩 중...</div>
-    </div>
-
-    <div class="info-section">
-        <h3>[ 게임 가이드 ]</h3>
-        <p>4개의 영역에서 동시에 벌어지는 시련을 견뎌내세요.<br>게임 도중 <b>ESC</b>를 누르면 중단할 수 있습니다.</p>
-        <p><b>영역 1 (좌상):</b> 마우스로 장애물을 피하세요.<br>
-        <b>영역 2 (우상):</b> A, D 키로 캐릭터를 조작하여 공을 피하세요.<br>
-        <b>영역 3 (좌하):</b> SPACE 키를 눌러 장애물을 점프하세요.<br>
-        <b>영역 4 (우하):</b> 게이지가 가득 차기 전 마우스 클릭으로 식히세요.</p>
-        <p>60초 이후부터는 <b>LEVEL UP</b>과 함께 난이도가 비약적으로 상승합니다!</p>
-    </div>
+<div class="seo-content-box">
+<h2>하드 모드 전용: 복합 중력장 시스템 가이드</h2>
+            <p>하드 모드에는 혁신적인 <b>'이중 중력'</b> 시스템이 적용되었습니다. 중력장 원의 바깥쪽에서는 중심부로 서서히 끌려가는 힘이 작용하며, 원의 안쪽으로 진입하면 반대로 밀어내는 힘이 작용합니다. 이 독특한 물리 법칙은 플레이어로 하여금 끊임없이 위치를 수정하게 만들며, 고도의 집중력을 요구합니다.</p>
+            <p>하드 모드에는 혁신적인 <b>'이중 중력'</b> 시스템이 적용되었습니다. 원 밖에서는 중심부로 끌려가며 원 안에서는 밀어내는 힘이 작용하여 고도의 집중력을 요구합니다.</p>
 </div>
+</section>
 
-<div id="result-screen" class="overlay hidden">
-    <h1 id="result-title">GAME OVER</h1>
-    <h2 id="final-stats" style="color: var(--primary-color); font-size: 28px;">버틴 시간: 0.0s</h2>
-    <input type="text" id="nickname" placeholder="닉네임 입력" maxlength="8" style="padding:12px; border-radius:8px; border:none; margin-bottom:15px; text-align:center; width:240px; font-size: 18px;">
-    <button class="btn" id="save-btn" style="background:var(--primary-color); color:#000;">기록 등록</button>
-    <button class="btn" style="background:#555;" onclick="location.reload()">다시 하기</button>
-</div>
+<audio id="gameBgm" loop preload="auto"><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg"></audio>
+    <div id="version-tag">v1.1.49</div>
+    <div id="version-tag">v1.1.51</div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+@@ -138,25 +131,30 @@ <h2>하드 모드 전용: 복합 중력장 시스템 가이드</h2>
 
-    // --- BGM System ---
-    let audioCtx, masterGain, musicInterval;
-    const volSlider = document.getElementById('volume-slider');
+window.handleTouch = (code, isPressed, event) => { if(event) event.preventDefault(); if(!isPressed) delete keys[code]; else keys[code] = true; };
 
-    function initAudio() {
-        if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            masterGain = audioCtx.createGain();
-            masterGain.connect(audioCtx.destination);
-        }
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        updateVolume();
-    }
+        // 랭킹 로직 (로딩 버그 해결 버전)
+        // 랭킹 로직: 가장 원본에 가까운 안정적인 방식으로 복구
+async function loadRankings(mode) {
+const list = document.getElementById('rank-list'); list.innerHTML = "<tr><td colspan='3'>로딩 중...</td></tr>";
+try {
+                // 특정 난이도 데이터만 호출
+const q = query(collection(db, "avoidance_rankings"), where("difficulty", "==", mode));
+const snap = await getDocs(q); 
+let ranks = [];
+                const resetTime = new Date("2026-03-02T00:00:00Z").getTime();
+                snap.forEach((doc) => {
+                    const data = doc.data();
+                    if(mode === 'EASY') {
+                        if(data.createdAt && data.createdAt.toMillis() >= resetTime) ranks.push(data);
+                    } else { ranks.push(data); }
+                });
+                ranks.sort((a, b) => b.score - a.score); list.innerHTML = "";
+                ranks.slice(0, 5).forEach((data, i) => { 
+                    list.innerHTML += `<tr><td style="width:50px">${i+1}위</td><td style="text-align:left;">${data.name||'익명'}</td><td style="color:var(--point); text-align:right">${(parseFloat(data.score)||0).toFixed(1)}s</td></tr>`; 
+                });
+            } catch (e) { list.innerHTML = "<tr><td colspan='3'>데이터 로드 실패</td></tr>"; }
+                snap.forEach((doc) => ranks.push(doc.data()));
+                
+                // 점수 내림차순 정렬
+                ranks.sort((a, b) => (Number(b.score) || 0) - (Number(a.score) || 0));
+                list.innerHTML = "";
+                
+                // 상위 5개만 표시
+                const display = ranks.slice(0, 5);
+                if(display.length === 0) {
+                    list.innerHTML = "<tr><td colspan='3'>기록이 없습니다.</td></tr>";
+                } else {
+                    display.forEach((data, i) => { 
+                        list.innerHTML += `<tr><td style="width:50px">${i+1}위</td><td style="text-align:left;">${data.name||'익명'}</td><td style="color:var(--point); text-align:right">${(parseFloat(data.score)||0).toFixed(1)}s</td></tr>`; 
+                    });
+                }
+            } catch (e) { list.innerHTML = "<tr><td colspan='3'>불러오기 실패</td></tr>"; }
+}
 
-    function updateVolume() {
-        if (masterGain) {
-            const val = volSlider.value / 400; 
-            masterGain.gain.setTargetAtTime(val, audioCtx.currentTime, 0.05);
-        }
-    }
-    volSlider.oninput = updateVolume;
+window.switchRankTab = (mode) => {
+@@ -186,7 +184,7 @@ <h2>하드 모드 전용: 복합 중력장 시스템 가이드</h2>
+}, 800);
+}
 
-    function playNote(freq, type, duration, volume = 1) {
-        if (!audioCtx || masterGain.gain.value <= 0) return;
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(volume, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-        osc.connect(gain);
-        gain.connect(masterGain);
-        osc.start();
-        osc.stop(audioCtx.currentTime + duration);
-    }
-
-    let beat = 0;
-    function startBGM() {
-        if (musicInterval) clearInterval(musicInterval);
-        musicInterval = setInterval(() => {
-            if (!gameActive) return;
-            const step = beat % 16;
-            if (step % 4 === 0) playNote(55, 'triangle', 0.4, 0.6); 
-            if (step % 8 === 4) playNote(110, 'square', 0.1, 0.2); 
-            if (stage >= 2 && step % 2 === 0) playNote([220, 261, 329][step % 3], 'sawtooth', 0.2, 0.1);
-            if (stage >= 3) playNote([440, 523, 659, 783][step % 4], 'sine', 0.1, 0.15);
-            if (stage >= 4 && step % 4 === 2) playNote(880, 'square', 0.2, 0.05);
-            beat++;
-        }, 150);
-    }
-
-    function stopBGM() {
-        clearInterval(musicInterval);
-        musicInterval = null;
-    }
-
-    // --- Game Logic ---
-    const firebaseConfig = {
-        apiKey: "AIzaSyCWvmTD7ZqrM8QS2jAtIoxyYw9zDghyyZo",
-        authDomain: "dummy-server-ff1b9.firebaseapp.com",
-        projectId: "dummy-server-ff1b9",
-        storageBucket: "dummy-server-ff1b9.firebasestorage.app",
-        messagingSenderId: "275700573811",
-        appId: "1:275700573811:web:bb1290a5e5ec97a73cac06"
-    };
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const timerEl = document.getElementById('timer');
-    const stageValEl = document.getElementById('stage-val');
-
-    let gameActive = false, score = 0, stage = 1, currentDiff = 'EASY';
-    let p1 = { x: 0, y: 0 }, keys = {};
-    const GW = 800, GH = 600;
-    let OX, OY;
-
-    function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        OX = (canvas.width - GW) / 2;
-        OY = (canvas.height - GH) / 2;
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    const area1 = {
-        enemies: [],
-        update() {
-            let spawnRate = currentDiff === 'EASY' ? 0.01 : 0.02;
-            let speedBase = currentDiff === 'EASY' ? 1.0 : 1.8;
-            if(score > 60) { spawnRate *= 2.5; speedBase *= 1.6; }
-            if(this.enemies.length < (score > 60 ? 10 : 4) && Math.random() < spawnRate) {
-                this.enemies.push({x: OX + Math.random()*(GW/2 - 20) + 10, y: OY - 20, s: speedBase + Math.random()*1.0});
-            }
-            this.enemies.forEach(e => {
-                e.y += e.s;
-                if(Math.hypot(p1.x - e.x, p1.y - e.y) < 16) stopGame("AREA 1: 충돌!");
-            });
-            this.enemies = this.enemies.filter(e => e.y < OY + GH/2);
-        },
-        draw() {
-            ctx.fillStyle = 'rgba(0, 255, 255, 0.08)'; ctx.fillRect(OX, OY, GW/2, GH/2);
-            ctx.fillStyle = '#0ff'; this.enemies.forEach(e => ctx.fillRect(e.x-6, e.y-6, 12, 12));
-            ctx.beginPath(); ctx.arc(p1.x, p1.y, 8, 0, Math.PI*2); ctx.fillStyle = '#0ff'; ctx.fill();
-        }
-    };
-
-    const area2 = {
-        px: 0, balls: [],
-        init() { this.px = OX + GW * 0.75; this.balls = []; },
-        update() {
-            if(keys['KeyA'] && this.px > OX + GW/2 + 15) this.px -= 3.5;
-            if(keys['KeyD'] && this.px < OX + GW - 15) this.px += 3.5;
-            let spawnRate = currentDiff === 'EASY' ? 0.008 : 0.015;
-            let speed = 2.5;
-            if(score > 70) { spawnRate *= 2.2; speed *= 1.5; }
-            if(Math.random() < spawnRate) this.balls.push({x: OX + GW/2 + 10 + Math.random()*(GW/2 - 20), y: OY, s: speed});
-            this.balls.forEach(b => {
-                b.y += b.s;
-                if(Math.abs(this.px - b.x) < 14 && Math.abs(OY + GH/2 - 30 - b.y) < 14) stopGame("AREA 2: 충돌!");
-            });
-            this.balls = this.balls.filter(b => b.y < OY + GH/2);
-        },
-        draw() {
-            ctx.fillStyle = 'rgba(255, 0, 255, 0.05)'; ctx.fillRect(OX + GW/2, OY, GW/2, GH/2);
-            ctx.fillStyle = '#f0f'; ctx.fillRect(this.px-10, OY + GH/2 - 35, 20, 20);
-            this.balls.forEach(b => { ctx.beginPath(); ctx.arc(b.x, b.y, 7, 0, Math.PI*2); ctx.fill(); });
-        }
-    };
-
-    const area3 = {
-        py: 0, v: 0, ground: true, obsX: 0,
-        init() { this.py = OY + GH - 25; this.v = 0; this.obsX = OX - 50; },
-        update() {
-            if(keys['Space'] && this.ground) { this.v = -9.2; this.ground = false; }
-            this.v += 0.32; this.py += this.v;
-            if(this.py >= OY + GH - 25) { this.py = OY + GH - 25; this.v = 0; this.ground = true; }
-            if(score > 22) {
-                let spd = (currentDiff === 'EASY' ? 3 : 4.5);
-                if(score > 80) spd *= 1.6;
-                this.obsX += spd;
-                if(this.obsX > OX + GW/2 + 100) this.obsX = OX - 50;
-            }
-            if(Math.abs(this.obsX - (OX + GW/2 - 80)) < 15 && this.py > OY + GH - 40) stopGame("AREA 3: 충돌!");
-        },
-        draw() {
-            let darkness = (score >= 85) ? Math.min(0.8, (score - 85) / 10) : 0;
-            ctx.fillStyle = `rgba(0, 255, 0, ${0.05 * (1-darkness)})`; ctx.fillRect(OX, OY + GH/2, GW/2, GH/2);
-            ctx.fillStyle = `rgba(0, 255, 0, ${1-darkness})`; ctx.fillRect(OX + GW/2 - 90, this.py-20, 20, 20);
-            ctx.fillStyle = `rgba(255, 255, 0, ${1-darkness})`; ctx.fillRect(this.obsX, OY + GH - 40, 15, 40);
-        }
-    };
-
-    const area4 = {
-        g: 0,
-        update() {
-            let inc = (currentDiff === 'EASY' ? 0.15 : 0.25);
-            if(score > 90) inc *= 1.8;
-            this.g += inc;
-            if(this.g >= 100) stopGame("AREA 4: 폭발!");
-        },
-        draw() {
-            ctx.fillStyle = 'rgba(255, 136, 0, 0.05)'; ctx.fillRect(OX + GW/2, OY + GH/2, GW/2, GH/2);
-            ctx.fillStyle = '#333'; ctx.fillRect(OX + GW * 0.62, OY + GH * 0.75, 150, 25);
-            ctx.fillStyle = this.g > 80 ? '#f00' : '#f80';
-            ctx.fillRect(OX + GW * 0.62, OY + GH * 0.75, this.g * 1.5, 25);
-        }
-    };
-
-    function drawInfo(areaNum, text) {
-        ctx.fillStyle = "rgba(241, 196, 15, 0.9)";
-        ctx.font = "bold 20px Pretendard";
-        ctx.textAlign = "center";
-        let tx = areaNum % 2 === 1 ? OX + GW/4 : OX + GW*0.75;
-        let ty = areaNum <= 2 ? OY + GH/4 : OY + GH*0.75;
-        ctx.fillText(text, tx, ty);
-    }
-
-    window.runGame = (diff) => {
-        initAudio();
-        currentDiff = diff;
-        document.getElementById('main-menu').classList.add('hidden');
-        document.getElementById('countdown-text').style.display = 'block';
-        let count = 3;
-        const cd = setInterval(() => {
-            document.getElementById('countdown-text').innerText = count <= 0 ? "GO!" : count;
-            if(count < 0) {
-                clearInterval(cd);
-                document.getElementById('countdown-text').style.display = 'none';
-                canvas.requestPointerLock();
-                startGame();
-            }
-            count--;
-        }, 800);
-    };
-
-    function startGame() {
-        gameActive = true; score = 0; stage = 1; beat = 0;
-        p1 = { x: OX + GW/4, y: OY + GH/4 };
-        area2.init(); area3.init(); area4.g = 0;
-        canvas.style.display = 'block';
-        document.getElementById('game-ui').style.display = 'block';
-        startBGM();
-        animate();
-    }
-
-    function stopGame(reason) {
-        if(!gameActive) return;
-        gameActive = false;
-        stopBGM();
-        document.exitPointerLock();
-        canvas.style.display = 'none';
-        document.getElementById('game-ui').style.display = 'none';
-        
-        // ESC로 종료한 경우 결과 등록 화면 대신 메인으로 즉시 이동
-        if(reason === "ESC") {
-            location.reload();
-            return;
-        }
-
-        document.getElementById('result-screen').classList.remove('hidden');
-        document.getElementById('final-stats').innerText = `시간: ${score.toFixed(1)}s (${reason})`;
-    }
-
-    function animate() {
-        if(!gameActive) return;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        score += 1/60;
-        timerEl.innerText = score.toFixed(1);
-        if(score > 30) stage = 4; else if(score > 20) stage = 3; else if(score > 10) stage = 2; else stage = 1;
-        stageValEl.innerText = stage;
-
-        area1.update(); area1.draw();
-        if(stage >= 2) { area2.update(); area2.draw(); }
-        if(stage >= 3) { area3.update(); area3.draw(); }
-        if(stage >= 4) { area4.update(); area4.draw(); }
-
-        if(score >= 8 && score < 10) drawInfo(2, "준비: A, D 이동");
-        if(score >= 18 && score < 20) drawInfo(3, "준비: SPACE 점프");
-        if(score >= 28 && score < 30) drawInfo(4, "준비: 클릭 해제");
-        
-        if(score >= 60 && score < 61.5) drawInfo(1, "LEVEL UP! (Faster)");
-        if(score >= 70 && score < 71.5) drawInfo(2, "LEVEL UP! (More)");
-        if(score >= 80 && score < 81.5) drawInfo(3, "LEVEL UP! (Danger)");
-        if(score >= 90 && score < 91.5) drawInfo(4, "LEVEL UP! (Explosive)");
-
-        ctx.strokeStyle = '#444'; ctx.lineWidth = 2;
-        ctx.strokeRect(OX, OY, GW, GH);
-        ctx.beginPath(); ctx.moveTo(OX + GW/2, OY); ctx.lineTo(OX + GW/2, OY + GH); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(OX, OY + GH/2); ctx.lineTo(OX + GW, OY + GH/2); ctx.stroke();
-        requestAnimationFrame(animate);
-    }
-
-    window.loadRanking = async (diff) => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.id === `tab-${diff}`));
-        const listDiv = document.getElementById('ranking-list');
-        listDiv.innerHTML = "로딩 중...";
-        try {
-            const q = query(collection(db, "dodge_rankings"), where("diff", "==", diff), orderBy("score", "desc"), limit(5));
-            const snap = await getDocs(q);
-            let html = "<table><tr><th>순위</th><th>닉네임</th><th>시간</th></tr>";
-            let rank = 1;
-            snap.forEach(doc => {
-                const data = doc.data();
-                html += `<tr><td>${rank}</td><td>${data.name}</td><td>${data.score.toFixed(1)}s</td></tr>`;
-                rank++;
-            });
-            listDiv.innerHTML = (rank === 1) ? "기록 없음" : html + "</table>";
-        } catch(e) { listDiv.innerHTML = "로드 실패"; }
-    };
-    loadRanking('EASY');
-
-    window.addEventListener('keydown', e => {
-        keys[e.code] = true;
-        // ESC 키 감지 및 종료
-        if(e.code === 'Escape' && gameActive) {
-            stopGame("ESC");
-        }
-    });
-    window.addEventListener('keyup', e => keys[e.code] = false);
-    window.addEventListener('mousemove', e => {
-        if(!gameActive) return;
-        p1.x = Math.max(OX + 12, Math.min(OX + GW/2 - 12, p1.x + e.movementX));
-        p1.y = Math.max(OY + 12, Math.min(OY + GH/2 - 12, p1.y + e.movementY));
-    });
-    window.addEventListener('mousedown', e => {
-        if(gameActive) area4.g = Math.max(0, area4.g - 20);
-    });
-
-    document.getElementById('save-btn').onclick = async () => {
-        const nick = document.getElementById('nickname').value.trim() || "익명";
-        await addDoc(collection(db, "dodge_rankings"), { diff: currentDiff, name: nick, score: score, timestamp: serverTimestamp() });
-        location.reload();
-    };
-</script>
-</body>
-</html>
+        // 가속도 완화 계수 적용
+        // 가속도 완화 계수 (t * 5, t * 6)
+function spawnLaserLoop() { if(gameState !== 'PLAY') return; const t = parseFloat(survivedTime); if(t > 40 && Math.random() < 0.3) spawnX(); else if(t > 20 && Math.random() < 0.5) spawnCross(); else spawnLaser(); let base = (diffMode === 'EASY') ? 1000 : 650; spawnTimers.push(setTimeout(spawnLaserLoop, Math.max(250, base - (t * 5)))); }
+function spawnHomingLoop() { if(gameState !== 'PLAY') return; const t = parseFloat(survivedTime); if(t > 45 && Math.random() < 0.4) spawnRadial(); else spawnHoming(); let base = (diffMode === 'EASY') ? 1500 : 900; spawnTimers.push(setTimeout(spawnHomingLoop, Math.max(450, base - (t * 6)))); }
+function spawnHardSpecialLoop() { if(gameState !== 'PLAY') return; objects.push({ type: 'GRAVITY', x: Math.random()*300+50, y: Math.random()*300+50, timer: Date.now(), duration: 6000 }); spawnTimers.push(setTimeout(spawnHardSpecialLoop, 15000)); }
