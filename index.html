@@ -1,68 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pattern Avoidance - v1.1.49</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pattern Avoidance - v1.1.51</title>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4133279395991822" crossorigin="anonymous"></script>
-<style>
-:root { --bg: #0c0c0c; --point: #f1c40f; --danger: #e74c3c; --text: #ffffff; --card: #1a1a1a; }
-@@ -42,7 +42,6 @@
-#version-tag { position: fixed; bottom: 5px; right: 5px; font-size: 10px; color: #444; }
-@media (max-width: 600px) { #mobile-controls { display: block; } }
-</style>
-    <script defer src="/_vercel/insights/script.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4133279395991822" crossorigin="anonymous"></script>
+    <style>
+        :root { --bg: #0c0c0c; --point: #f1c40f; --danger: #e74c3c; --text: #ffffff; --card: #1a1a1a; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Pretendard', sans-serif; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; touch-action: manipulation; }
+        .ad-slot-top { width: 100%; max-width: 728px; height: 90px; background: transparent; margin: 5px 0; display: flex; align-items: center; justify-content: center; border: 1px dashed #333; overflow: hidden; }
+        header { width: 100%; height: auto; min-height: 70px; background: #000; border-bottom: 1px solid #333; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; padding: 10px 20px; box-sizing: border-box; position: sticky; top: 0; z-index: 1000; gap: 10px; }
+        .bgm-ctrl { display: flex; align-items: center; gap: 8px; background: #222; padding: 5px 12px; border-radius: 20px; border: 1px solid #444; }
+        .bgm-ctrl span { font-size: 11px; font-weight: bold; color: var(--point); }
+        #volume-slider { width: 60px; accent-color: var(--point); cursor: pointer; }
+        .btn-hub { padding: 12px 30px; background: var(--point); color: #000; text-decoration: none; font-weight: 900; border-radius: 8px; font-size: 18px; border: 3px solid #fff; box-shadow: 0 0 15px rgba(241, 196, 15, 0.4); }
+        #game-container { position: relative; width: 100%; max-width: 400px; display: flex; justify-content: center; align-items: center; flex-direction: column; margin-top: 5px; }
+        canvas { background: #000; border: 3px solid #fff; display: none; width: 100%; aspect-ratio: 1/1; box-shadow: 0 0 25px rgba(255, 255, 255, 0.1); touch-action: none; pointer-events: auto; }
+        #mobile-controls { display: none; width: 100%; max-width: 400px; margin-top: 20px; padding-bottom: 20px; z-index: 2000; }
+        .d-pad { display: grid; grid-template-columns: repeat(3, 70px); grid-template-rows: repeat(3, 70px); gap: 8px; justify-content: center; }
+        .ctrl-btn { width: 70px; height: 70px; background: rgba(255, 255, 255, 0.12); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #fff; user-select: none; -webkit-user-select: none; }
+        .ctrl-btn:active { background: rgba(255, 255, 255, 0.4); border-color: var(--point); }
+        .btn-up { grid-column: 2; grid-row: 1; }
+        .btn-left { grid-column: 1; grid-row: 2; }
+        .btn-right { grid-column: 3; grid-row: 2; }
+        .btn-down { grid-column: 2; grid-row: 3; }
+        .overlay { text-align: center; background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid #333; width: 90%; box-sizing: border-box; }
+        .btn-diff { padding: 15px 0; font-size: 18px; border: none; font-weight: bold; border-radius: 8px; flex: 1; cursor: pointer; }
+        .btn-easy { background: #2ecc71; color: #000; }
+        .btn-hard { background: var(--danger); color: #fff; }
+        .btn-main { padding: 15px 40px; font-size: 18px; background: var(--point); border: none; font-weight: bold; border-radius: 8px; color: #000; cursor: pointer; }
+        #status-ui { width: 95%; display: none; justify-content: space-between; font-size: 14px; font-weight: bold; margin-bottom: 8px; }
+        #ranking-board { width: 95%; background: var(--card); border-radius: 15px; margin-top: 20px; border: 1px solid #333; overflow: hidden; }
+        .rank-tabs { display: flex; background: #222; }
+        .rank-tab-btn { flex:1; padding:12px; border:none; background:none; color:#888; font-weight:bold; cursor:pointer; }
+        .rank-tab-btn.active { background:var(--card); color:var(--point); border-bottom:2px solid var(--point); }
+        .rank-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .rank-table td { padding: 12px; border-bottom: 1px solid #222; text-align: center; }
+        #seo-section { width: 90%; max-width: 800px; margin-top: 40px; padding-bottom: 80px; color: #ccc; line-height: 1.8; }
+        .seo-content-box { background: #111; padding: 30px; border-radius: 15px; border-left: 5px solid var(--point); margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .seo-content-box h2 { color: var(--point); margin-top: 0; font-size: 1.5rem; }
+        #version-tag { position: fixed; bottom: 5px; right: 5px; font-size: 10px; color: #444; }
+        @media (max-width: 600px) { #mobile-controls { display: block; } }
+    </style>
 </head>
 <body>
-<div class="ad-slot-top"><span style="color:#444; font-size:11px;">ADVERTISEMENT</span></div>
-@@ -102,21 +101,15 @@ <h1 id="result-time" style="font-size: 3rem; color: var(--point); margin: 5px 0;
-<div class="seo-content-box">
-<h2>중독성 강한 웹 브라우저 탄막 피하기 게임</h2>
-<p>패턴 어보이던스(Pattern Avoidance)는 별도의 설치 없이 브라우저에서 즉시 즐길 수 있는 고난도 <b>회피 액션 게임</b>입니다. 현대적인 감각의 UI와 클래식한 아케이드 감성을 결합하여, 남녀노소 누구나 반응 속도의 한계에 도전할 수 있습니다. 본 게임은 PC 환경의 키보드 조작은 물론, 스마트폰 환경의 터치 인터페이스까지 완벽하게 지원합니다.</p>
-            <h3>핵심 게임 특징 및 플레이 방법</h3>
-            <ul>
-                <li><b>정밀한 물리 엔진:</b> 캐릭터의 이동과 탄막의 충돌 판정을 픽셀 단위로 계산하여 불합리한 피격 상황을 최소화했습니다.</li>
-                <li><b>이지 & 하드 모드 제공:</b> 5의 체력을 가진 이지 모드에서 패턴을 익히고, 단 3회의 기회만 주어지는 하드 모드에서 진정한 고수에 도전하세요.</li>
-                <li><b>역동적인 패턴 변화:</b> 고정된 패턴이 아닌, 생존 시간에 따라 탄막의 속도와 생성 빈도가 실시간으로 가속되어 긴장감을 유지합니다.</li>
-            </ul>
-</div>
-<div class="seo-content-box">
-<h2>하드 모드 전용: 복합 중력장 시스템 가이드</h2>
-            <p>하드 모드에는 혁신적인 <b>'이중 중력'</b> 시스템이 적용되었습니다. 중력장 원의 바깥쪽에서는 중심부로 서서히 끌려가는 힘이 작용하며, 원의 안쪽으로 진입하면 반대로 밀어내는 힘이 작용합니다. 이 독특한 물리 법칙은 플레이어로 하여금 끊임없이 위치를 수정하게 만들며, 고도의 집중력을 요구합니다.</p>
-            <p>하드 모드에는 혁신적인 <b>'이중 중력'</b> 시스템이 적용되었습니다. 원 밖에서는 중심부로 끌려가며 원 안에서는 밀어내는 힘이 작용하여 고도의 집중력을 요구합니다.</p>
-</div>
-</section>
+    <div class="ad-slot-top"><span style="color:#444; font-size:11px;">ADVERTISEMENT</span></div>
+    <header>
+        <div style="font-size: 16px; font-weight: 900;">PATTERN <span style="color: var(--point);">AVOIDANCE</span></div>
+        <div class="bgm-ctrl">
+            <span>BGM</span>
+            <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5">
+            <button id="bgm-toggle" style="background:none; border:none; color:#fff; cursor:pointer; font-size:12px;">🔈</button>
+        </div>
+        <a href="https://game-hub-steel-eight.vercel.app/" class="btn-hub">HUB로 돌아가기</a>
+    </header>
 
-<audio id="gameBgm" loop preload="auto"><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg"></audio>
-    <div id="version-tag">v1.1.49</div>
+    <div id="game-container">
+        <div id="start-screen" class="overlay">
+            <h1 style="font-size: 1.8rem; margin: 0;">난이도 선택</h1>
+            <div style="display:flex; gap:10px; width:100%; margin-top:15px;">
+                <button class="btn-diff btn-easy" onclick="startGame('EASY')">EASY</button>
+                <button class="btn-diff btn-hard" onclick="startGame('HARD')">HARD</button>
+            </div>
+            <p style="font-size: 12px; color: #888; margin-top:15px;">ESC를 누르면 게임이 종료됩니다.</p>
+        </div>
+        <div id="result-screen" class="overlay" style="display:none;">
+            <h2 style="color: var(--danger); margin: 0;">GAME OVER</h2>
+            <h1 id="result-time" style="font-size: 3rem; color: var(--point); margin: 5px 0;">0.0s</h1>
+            <div id="save-form">
+                <input type="text" id="username" placeholder="이름 입력" maxlength="10" style="padding:12px; border-radius:8px; border:1px solid #444; background:#000; color:#fff; width:160px; text-align:center;">
+                <br><br>
+                <button class="btn-main" id="save-btn" onclick="saveRecord()">기록 저장</button>
+            </div>
+            <button class="btn-main" onclick="location.reload()" style="display:none; background: #333; color: #fff; margin-top: 10px;" id="retry-btn">다시 시도</button>
+        </div>
+        <div id="status-ui">
+            <div id="ui-diff-label">EASY</div>
+            <div style="color:var(--danger)">HP: <span id="hp-val">5</span></div>
+            <div id="ui-timer" style="color: var(--point);">0.0s</div>
+        </div>
+        <canvas id="gameCanvas" width="400" height="400"></canvas>
+        <div id="mobile-controls">
+            <div class="d-pad">
+                <div class="ctrl-btn btn-up" ontouchstart="handleTouch('KeyW', true, event)" ontouchend="handleTouch('KeyW', false, event)">↑</div>
+                <div class="ctrl-btn btn-left" ontouchstart="handleTouch('KeyA', true, event)" ontouchend="handleTouch('KeyA', false, event)">←</div>
+                <div class="ctrl-btn btn-right" ontouchstart="handleTouch('KeyD', true, event)" ontouchend="handleTouch('KeyD', false, event)">→</div>
+                <div class="ctrl-btn btn-down" ontouchstart="handleTouch('KeyS', true, event)" ontouchend="handleTouch('KeyS', false, event)">↓</div>
+            </div>
+        </div>
+        <div id="ranking-board">
+            <div class="rank-tabs">
+                <button class="rank-tab-btn active" id="tab-easy" onclick="switchRankTab('EASY')">EASY 랭킹</button>
+                <button class="rank-tab-btn" id="tab-hard" onclick="switchRankTab('HARD')">HARD 랭킹</button>
+            </div>
+            <table class="rank-table"><tbody id="rank-list"></tbody></table>
+        </div>
+    </div>
+
+    <section id="seo-section">
+        <div class="seo-content-box">
+            <h2>중독성 강한 웹 브라우저 탄막 피하기 게임</h2>
+            <p>패턴 어보이던스(Pattern Avoidance)는 별도의 설치 없이 브라우저에서 즉시 즐길 수 있는 고난도 <b>회피 액션 게임</b>입니다. 현대적인 감각의 UI와 클래식한 아케이드 감성을 결합하여, 남녀노소 누구나 반응 속도의 한계에 도전할 수 있습니다. 본 게임은 PC 환경의 키보드 조작은 물론, 스마트폰 환경의 터치 인터페이스까지 완벽하게 지원합니다.</p>
+        </div>
+        <div class="seo-content-box">
+            <h2>하드 모드 전용: 복합 중력장 시스템 가이드</h2>
+            <p>하드 모드에는 혁신적인 <b>'이중 중력'</b> 시스템이 적용되었습니다. 원 밖에서는 중심부로 끌려가며 원 안에서는 밀어내는 힘이 작용하여 고도의 집중력을 요구합니다.</p>
+        </div>
+    </section>
+
+    <audio id="gameBgm" loop preload="auto"><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg"></audio>
     <div id="version-tag">v1.1.51</div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-@@ -138,25 +131,30 @@ <h2>하드 모드 전용: 복합 중력장 시스템 가이드</h2>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, getDocs, addDoc, query, serverTimestamp, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        
+        const firebaseConfig = { apiKey: "AIzaSyCWvmTD7ZqrM8QS2jAtIoxyYw9zDghyyZo", authDomain: "dummy-server-ff1b9.firebaseapp.com", projectId: "dummy-server-ff1b9", storageBucket: "dummy-server-ff1b9.firebasestorage.app", messagingSenderId: "275700573811", appId: "1:275700573811:web:bb1290a5e5ec97a73cac06" };
+        const app = initializeApp(firebaseConfig); const db = getFirestore(app);
+        const canvas = document.getElementById('gameCanvas'); const ctx = canvas.getContext('2d');
+        const bgm = document.getElementById('gameBgm'); const volSlider = document.getElementById('volume-slider');
+        
+        let gameState = 'WAIT', diffMode = 'EASY', animationId = null;
+        let player = { x: 200, y: 200, r: 6, hp: 5, speed: 2.3, invul: 0 };
+        let objects = [], keys = {}, startTime = 0, survivedTime = "0.0";
+        let spawnTimers = [], lastUpdate = 0;
 
-window.handleTouch = (code, isPressed, event) => { if(event) event.preventDefault(); if(!isPressed) delete keys[code]; else keys[code] = true; };
+        const savedVol = localStorage.getItem('gameVolume');
+        if(savedVol !== null) { bgm.volume = savedVol; volSlider.value = savedVol; } else { bgm.volume = 0.5; }
+        volSlider.oninput = (e) => { bgm.volume = e.target.value; localStorage.setItem('gameVolume', e.target.value); };
+        
+        window.handleTouch = (code, isPressed, event) => { if(event) event.preventDefault(); if(!isPressed) delete keys[code]; else keys[code] = true; };
 
-        // 랭킹 로직 (로딩 버그 해결 버전)
         // 랭킹 로직: 가장 원본에 가까운 안정적인 방식으로 복구
-async function loadRankings(mode) {
-const list = document.getElementById('rank-list'); list.innerHTML = "<tr><td colspan='3'>로딩 중...</td></tr>";
-try {
+        async function loadRankings(mode) {
+            const list = document.getElementById('rank-list'); list.innerHTML = "<tr><td colspan='3'>로딩 중...</td></tr>";
+            try {
                 // 특정 난이도 데이터만 호출
-const q = query(collection(db, "avoidance_rankings"), where("difficulty", "==", mode));
-const snap = await getDocs(q); 
-let ranks = [];
-                const resetTime = new Date("2026-03-02T00:00:00Z").getTime();
-                snap.forEach((doc) => {
-                    const data = doc.data();
-                    if(mode === 'EASY') {
-                        if(data.createdAt && data.createdAt.toMillis() >= resetTime) ranks.push(data);
-                    } else { ranks.push(data); }
-                });
-                ranks.sort((a, b) => b.score - a.score); list.innerHTML = "";
-                ranks.slice(0, 5).forEach((data, i) => { 
-                    list.innerHTML += `<tr><td style="width:50px">${i+1}위</td><td style="text-align:left;">${data.name||'익명'}</td><td style="color:var(--point); text-align:right">${(parseFloat(data.score)||0).toFixed(1)}s</td></tr>`; 
-                });
-            } catch (e) { list.innerHTML = "<tr><td colspan='3'>데이터 로드 실패</td></tr>"; }
+                const q = query(collection(db, "avoidance_rankings"), where("difficulty", "==", mode));
+                const snap = await getDocs(q); 
+                let ranks = [];
                 snap.forEach((doc) => ranks.push(doc.data()));
                 
                 // 점수 내림차순 정렬
@@ -79,15 +155,127 @@ let ranks = [];
                     });
                 }
             } catch (e) { list.innerHTML = "<tr><td colspan='3'>불러오기 실패</td></tr>"; }
-}
+        }
 
-window.switchRankTab = (mode) => {
-@@ -186,7 +184,7 @@ <h2>하드 모드 전용: 복합 중력장 시스템 가이드</h2>
-}, 800);
-}
+        window.switchRankTab = (mode) => {
+            document.getElementById('tab-easy').className = mode === 'EASY' ? 'rank-tab-btn active' : 'rank-tab-btn';
+            document.getElementById('tab-hard').className = mode === 'HARD' ? 'rank-tab-btn active' : 'rank-tab-btn';
+            loadRankings(mode);
+        };
+        switchRankTab('EASY');
 
-        // 가속도 완화 계수 적용
+        window.addEventListener('keydown', (e) => { keys[e.code] = true; if(e.code === 'Escape' && gameState === 'PLAY') endGame(); });
+        window.addEventListener('keyup', (e) => { delete keys[e.code]; });
+
+        window.startGame = (mode) => {
+            diffMode = mode; player.hp = (mode === 'EASY') ? 5 : 3; player.x = 200; player.y = 200; objects = []; 
+            document.getElementById('hp-val').innerText = player.hp; document.getElementById('ui-diff-label').innerText = mode;
+            document.getElementById('start-screen').style.display = 'none'; document.getElementById('status-ui').style.display = 'flex';
+            canvas.style.display = 'block'; bgm.play(); startReady();
+        };
+
+        function startReady() {
+            gameState = 'READY'; let count = 3;
+            let readyInt = setInterval(() => {
+                draw(); ctx.fillStyle = "#f1c40f"; ctx.font = "bold 40px Pretendard"; ctx.textAlign = "center";
+                ctx.fillText(count > 0 ? count : "GO!", 200, 215);
+                if(count < 0) { clearInterval(readyInt); gameState = 'PLAY'; startTime = Date.now(); lastUpdate = Date.now(); spawnLaserLoop(); spawnHomingLoop(); if(diffMode === 'HARD') spawnHardSpecialLoop(); gameLoop(); }
+                count--;
+            }, 800);
+        }
+
         // 가속도 완화 계수 (t * 5, t * 6)
-function spawnLaserLoop() { if(gameState !== 'PLAY') return; const t = parseFloat(survivedTime); if(t > 40 && Math.random() < 0.3) spawnX(); else if(t > 20 && Math.random() < 0.5) spawnCross(); else spawnLaser(); let base = (diffMode === 'EASY') ? 1000 : 650; spawnTimers.push(setTimeout(spawnLaserLoop, Math.max(250, base - (t * 5)))); }
-function spawnHomingLoop() { if(gameState !== 'PLAY') return; const t = parseFloat(survivedTime); if(t > 45 && Math.random() < 0.4) spawnRadial(); else spawnHoming(); let base = (diffMode === 'EASY') ? 1500 : 900; spawnTimers.push(setTimeout(spawnHomingLoop, Math.max(450, base - (t * 6)))); }
-function spawnHardSpecialLoop() { if(gameState !== 'PLAY') return; objects.push({ type: 'GRAVITY', x: Math.random()*300+50, y: Math.random()*300+50, timer: Date.now(), duration: 6000 }); spawnTimers.push(setTimeout(spawnHardSpecialLoop, 15000)); }
+        function spawnLaserLoop() { if(gameState !== 'PLAY') return; const t = parseFloat(survivedTime); if(t > 40 && Math.random() < 0.3) spawnX(); else if(t > 20 && Math.random() < 0.5) spawnCross(); else spawnLaser(); let base = (diffMode === 'EASY') ? 1000 : 650; spawnTimers.push(setTimeout(spawnLaserLoop, Math.max(250, base - (t * 5)))); }
+        function spawnHomingLoop() { if(gameState !== 'PLAY') return; const t = parseFloat(survivedTime); if(t > 45 && Math.random() < 0.4) spawnRadial(); else spawnHoming(); let base = (diffMode === 'EASY') ? 1500 : 900; spawnTimers.push(setTimeout(spawnHomingLoop, Math.max(450, base - (t * 6)))); }
+        function spawnHardSpecialLoop() { if(gameState !== 'PLAY') return; objects.push({ type: 'GRAVITY', x: Math.random()*300+50, y: Math.random()*300+50, timer: Date.now(), duration: 6000 }); spawnTimers.push(setTimeout(spawnHardSpecialLoop, 15000)); }
+        
+        function spawnLaser() { objects.push({ type: 'LASER', sub: Math.random()>0.5?'H':'V', pos: Math.random()*380+10, stage: 'WARN', timer: Date.now() }); }
+        function spawnCross() { objects.push({ type: 'LASER', sub: 'H', pos: player.y, stage: 'WARN', timer: Date.now(), thick: 25 }); objects.push({ type: 'LASER', sub: 'V', pos: player.x, stage: 'WARN', timer: Date.now(), thick: 25 }); }
+        function spawnX() { objects.push({ type: 'LASER', sub: 'X1', stage: 'WARN', timer: Date.now() }); objects.push({ type: 'LASER', sub: 'X2', stage: 'WARN', timer: Date.now() }); }
+        function spawnHoming() { objects.push({ type: 'HOMING', x: Math.random()*400, y: Math.random()*400, stage: 'WARN', timer: Date.now() }); }
+        function spawnRadial() { objects.push({ type: 'RADIAL', x: 200, y: 200, stage: 'FIRE', timer: Date.now() }); }
+
+        function update() {
+            const now = Date.now(); const dt = now - lastUpdate; lastUpdate = now;
+            if(player.invul > 0) player.invul -= dt;
+            let moveX = 0, moveY = 0;
+            if(keys['KeyW']) moveY -= player.speed; if(keys['KeyS']) moveY += player.speed;
+            if(keys['KeyA']) moveX -= player.speed; if(keys['KeyD']) moveX += player.speed;
+            for(let i = objects.length - 1; i >= 0; i--) {
+                let o = objects[i];
+                if(o.type === 'GRAVITY') {
+                    if(now - o.timer > o.duration) { objects.splice(i,1); continue; }
+                    const dist = Math.hypot(o.x - player.x, o.y - player.y);
+                    const angle = Math.atan2(o.y - player.y, o.x - player.x);
+                    if(dist > 100) { moveX += Math.cos(angle) * 0.45; moveY += Math.sin(angle) * 0.45; }
+                    else { moveX -= Math.cos(angle) * 0.65; moveY -= Math.sin(angle) * 0.65; }
+                }
+            }
+            player.x = Math.max(player.r, Math.min(400 - player.r, player.x + moveX));
+            player.y = Math.max(player.r, Math.min(400 - player.r, player.y + moveY));
+            survivedTime = ((now - startTime) / 1000).toFixed(1);
+            document.getElementById('ui-timer').innerText = survivedTime + 's';
+            for(let i = objects.length - 1; i >= 0; i--) {
+                let o = objects[i]; if(o.type === 'GRAVITY') continue;
+                const warnDur = (diffMode === 'EASY') ? 700 : 500;
+                if(o.stage === 'WARN' && now - o.timer > warnDur) {
+                    o.stage = 'FIRE'; o.timer = now;
+                    if(o.type === 'HOMING') { const ang = Math.atan2(player.y - o.y, player.x - o.x); o.vx = Math.cos(ang) * 4.5; o.vy = Math.sin(ang) * 4.5; }
+                    if(o.type === 'RADIAL') { o.bullets = []; for(let j=0; j<8; j++){ let a = (Math.PI*2/8)*j; o.bullets.push({x:o.x, y:o.y, vx:Math.cos(a)*3, vy:Math.sin(a)*3}); } }
+                } else if(o.stage === 'FIRE') {
+                    let hit = false;
+                    if(o.type === 'LASER') {
+                        let t = o.thick || 15;
+                        if(o.sub === 'H' && Math.abs(player.y - o.pos) < player.r + t/2) hit = true;
+                        if(o.sub === 'V' && Math.abs(player.x - o.pos) < player.r + t/2) hit = true;
+                        if(o.sub === 'X1' && Math.abs(player.x - player.y) < player.r + 10) hit = true;
+                        if(o.sub === 'X2' && Math.abs(player.x + player.y - 400) < player.r + 10) hit = true;
+                        if(now - o.timer > 200) objects.splice(i, 1);
+                    } else if(o.type === 'HOMING') {
+                        o.x += o.vx; o.y += o.vy; if(Math.hypot(player.x-o.x, player.y-o.y) < player.r + 5) hit = true;
+                        if(o.x<0 || o.x>400 || o.y<0 || o.y>400) objects.splice(i, 1);
+                    } else if(o.type === 'RADIAL' && o.bullets) {
+                        o.bullets.forEach((b, bi) => { b.x += b.vx; b.y += b.vy; if(Math.hypot(player.x-b.x, player.y-b.y) < player.r + 4) { hit = true; o.bullets.splice(bi, 1); } });
+                        if(now - o.timer > 2000) objects.splice(i, 1);
+                    }
+                    if(hit && player.invul <= 0) { player.hp--; player.invul = 1000; document.getElementById('hp-val').innerText = player.hp; if(player.hp <= 0) endGame(); }
+                }
+            }
+        }
+
+        function draw() {
+            ctx.fillStyle = "#000"; ctx.fillRect(0,0,400,400);
+            if(!(player.invul > 0 && Math.floor(Date.now()/100) % 2 === 0)) {
+                ctx.beginPath(); ctx.arc(player.x, player.y, player.r, 0, Math.PI*2);
+                ctx.fillStyle = (player.invul > 0) ? "#3498db" : "#e74c3c"; ctx.fill(); ctx.closePath();
+            }
+            objects.forEach(o => {
+                ctx.beginPath();
+                if(o.type === 'GRAVITY') {
+                    const pulse = (Math.sin(Date.now()/200) + 1) * 5;
+                    ctx.setLineDash([]); ctx.strokeStyle = "rgba(155, 89, 182, 0.6)"; ctx.lineWidth = 3;
+                    ctx.arc(o.x, o.y, 100, 0, Math.PI*2); ctx.stroke();
+                    ctx.beginPath(); ctx.arc(o.x, o.y, 100 - pulse, 0, Math.PI*2);
+                    ctx.strokeStyle = "rgba(155, 89, 182, 0.2)"; ctx.stroke();
+                } else if(o.type === 'LASER') {
+                    if(o.stage === 'WARN') { ctx.strokeStyle = "rgba(241,196,15,0.3)"; ctx.lineWidth = 2; ctx.setLineDash([5,5]); }
+                    else { ctx.strokeStyle = "#fff"; ctx.lineWidth = o.thick || 15; ctx.setLineDash([]); }
+                    if(o.sub === 'H') { ctx.moveTo(0, o.pos); ctx.lineTo(400, o.pos); }
+                    else if(o.sub === 'V') { ctx.moveTo(o.pos, 0); ctx.lineTo(o.pos, 400); }
+                    else if(o.sub === 'X1') { ctx.moveTo(0,0); ctx.lineTo(400,400); }
+                    else if(o.sub === 'X2') { ctx.moveTo(400,0); ctx.lineTo(0,400); } ctx.stroke();
+                } else if(o.type === 'HOMING') {
+                    if(o.stage === 'WARN') { ctx.strokeStyle = "rgba(231,76,60,0.6)"; ctx.setLineDash([8,4]); ctx.moveTo(o.x, o.y); ctx.lineTo(player.x, player.y); ctx.stroke(); ctx.fillStyle = "#e74c3c"; ctx.setLineDash([]); ctx.beginPath(); ctx.arc(o.x,o.y,5,0,Math.PI*2); ctx.fill(); }
+                    else { ctx.fillStyle = "#f1c40f"; ctx.beginPath(); ctx.arc(o.x,o.y,6,0,Math.PI*2); ctx.fill(); }
+                } else if(o.type === 'RADIAL' && o.bullets) { ctx.fillStyle = "#3498db"; o.bullets.forEach(b => { ctx.beginPath(); ctx.arc(b.x,b.y,4,0,Math.PI*2); ctx.fill(); }); }
+            });
+        }
+        function gameLoop() { if(gameState === 'PLAY') { update(); draw(); animationId = requestAnimationFrame(gameLoop); } }
+        function endGame() { gameState = 'END'; if(animationId) cancelAnimationFrame(animationId); spawnTimers.forEach(clearTimeout); canvas.style.display = 'none'; document.getElementById('status-ui').style.display = 'none'; document.getElementById('result-screen').style.display = 'flex'; document.getElementById('result-time').innerText = survivedTime + 's'; bgm.pause(); bgm.currentTime = 0; switchRankTab(diffMode); }
+        window.saveRecord = async function() {
+            const name = document.getElementById('username').value.trim() || "익명"; const btn = document.getElementById('save-btn'); btn.disabled = true;
+            try { await addDoc(collection(db, "avoidance_rankings"), { name, score: Number(survivedTime), difficulty: diffMode, createdAt: serverTimestamp() }); document.getElementById('save-form').innerHTML = "<b style='color:#2ecc71;'>등록 완료!</b>"; document.getElementById('retry-btn').style.display = 'block'; loadRankings(diffMode); } catch (e) { alert("저장 실패"); btn.disabled = false; }
+        };
+    </script>
+</body>
+</html>
